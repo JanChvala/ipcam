@@ -47,7 +47,7 @@ public class IPCameraPreviewWindow extends StandOutWindow {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // check Intent extrsa parameter
+        // check Intent extras parameter
         quitOnEmpty = intent.getBooleanExtra("quitOnEmpty", true);
         return super.onStartCommand(intent, flags, startId);
     }
