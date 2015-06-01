@@ -1,7 +1,8 @@
 package cz.janchvala.android.ipcamera.network.bean;
 
 /**
- * The DeviceRegistration is object for device rigistration which is send to server.
+ * The DeviceRegistration is object for device registration which is send to server. It contains GCM
+ * registration ID so that the server can contact the device.
  * <p/>
  * Created by xchval01 on 13.03.2015.
  */

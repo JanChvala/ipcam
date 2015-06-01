@@ -30,20 +30,21 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.UUID;
 
-import cz.janchvala.android.gcm.ui.fragment.ProgressCardFragment;
-import cz.janchvala.android.gcm.ui.fragment.ProgressCardFragment_;
-import cz.janchvala.android.gcm.ui.fragment.ReadyToConnectCardFragment;
-import cz.janchvala.android.gcm.ui.fragment.ReadyToConnectCardFragment_;
-import cz.janchvala.android.gcm.ui.view.ChangePasswordView;
-import cz.janchvala.android.gcm.ui.view.ChangePasswordView_;
-import cz.janchvala.android.gcm.ui.view.StreamSettingsView;
-import cz.janchvala.android.gcm.ui.view.StreamSettingsView_;
 import cz.janchvala.android.ipcamera.R;
-import cz.janchvala.android.ipcamera.helpers.IntentHelpers;
-import cz.janchvala.android.ipcamera.network.rest.GcmRestClient;
-import cz.janchvala.android.ipcamera.preferences.IPcamPreferences_;
+import cz.janchvala.android.ipcamera.helpers.IntentHelper;
+import cz.janchvala.android.ipcamera.network.rest.ApplicationServerRestClient;
+import cz.janchvala.android.ipcamera.network.rest.RegistrationCallbacks;
+import cz.janchvala.android.ipcamera.preferences.IPCameraPreferences_;
 import cz.janchvala.android.ipcamera.tools.GCMProvider;
 import cz.janchvala.android.ipcamera.tools.OnRegistrationResult;
+import cz.janchvala.android.ipcamera.ui.fragment.ProgressCardFragment;
+import cz.janchvala.android.ipcamera.ui.fragment.ProgressCardFragment_;
+import cz.janchvala.android.ipcamera.ui.fragment.ReadyToConnectCardFragment;
+import cz.janchvala.android.ipcamera.ui.fragment.ReadyToConnectCardFragment_;
+import cz.janchvala.android.ipcamera.ui.view.ChangePasswordView;
+import cz.janchvala.android.ipcamera.ui.view.ChangePasswordView_;
+import cz.janchvala.android.ipcamera.ui.view.StreamSettingsView;
+import cz.janchvala.android.ipcamera.ui.view.StreamSettingsView_;
 
 /**
  * Startup activity handles ChangeLog dialog and setup wizard dialog to be shown.
@@ -57,15 +58,15 @@ import cz.janchvala.android.ipcamera.tools.OnRegistrationResult;
 public class StartupActivity
         extends ToolbarBaseActivity
         implements DialogInterface.OnCancelListener, OnRegistrationResult, ReadyToConnectCardFragment.Callbacks,
-                View.OnClickListener, GcmRestClient.RegistrationCallbacks, DialogInterface.OnDismissListener, Switch.OnCheckedChangeListener {
+        View.OnClickListener, RegistrationCallbacks, DialogInterface.OnDismissListener, Switch.OnCheckedChangeListener {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Pref
-    IPcamPreferences_ ipCamPreferences;
+    IPCameraPreferences_ ipCamPreferences;
 
     @Bean
-    GcmRestClient gcmClient;
+    ApplicationServerRestClient gcmClient;
 
     @Bean
     GCMProvider gcmProvider;
@@ -115,7 +116,7 @@ public class StartupActivity
             logi("Play services are missing");
             showError("Play services missing");
         } else if (Strings.isNullOrEmpty(regId)) {
-            // registerForGcm
+            // register for GCM
             logi("We are trying to register for GCM service.");
             showProgressStartLoading(R.string.getting_things_ready, R.string.google_cloud_messaging, R.drawable.ic_cloud_queue_grey600_48dp);
             gcmProvider.registerAsync(new String[]{ipCamPreferences.gcmSenderId().get()}, this);
@@ -158,6 +159,9 @@ public class StartupActivity
         return true;
     }
 
+    /**
+     * initialize and add the ready to stream fragment.
+     */
     private void showReadyToStreamFragment() {
         if (fReadyToStream == null) {
             fReadyToStream = new ReadyToConnectCardFragment_.FragmentBuilder_().build();
@@ -169,18 +173,38 @@ public class StartupActivity
                 .beginTransaction()
                 .setCustomAnimations(R.animator.card_slide_down, R.animator.card_slide_up)
                 .replace(R.id.fl_activity_start_card_container, fReadyToStream)
-                        //.addToBackStack(null)
                 .commit();
     }
 
+    /**
+     * showing the progress fragment.
+     *
+     * @param title       progress title
+     * @param description progress description
+     * @param image       image for fragment
+     */
     private void showProgressStartLoading(@StringRes int title, @StringRes int description, @DrawableRes int image) {
         setupProgressFragment(title, getString(description), image, null, true);
     }
 
+    /**
+     * showing error in progress fragment.
+     *
+     * @param message error message
+     */
     private void showError(String message) {
         setupProgressFragment(R.string.error, message, R.drawable.ic_refresh_grey600_48dp, this, false);
     }
 
+    /**
+     * setting up the progress fragment.
+     *
+     * @param title       message
+     * @param description message
+     * @param image       progress image
+     * @param listener    listener for click event
+     * @param progress    progress or not
+     */
     @UiThread(propagation = UiThread.Propagation.REUSE)
     protected void setupProgressFragment(@StringRes int title, String description, @DrawableRes int image, View.OnClickListener listener, boolean progress) {
         boolean show = fProgress == null;
@@ -204,20 +228,29 @@ public class StartupActivity
         }
     }
 
+    /**
+     * Called when enable streaming checkbox changes the value.
+     */
     protected void onStreamActiveChange() {
         checkEverythingIsOkAsync();
         int colorResId = R.color.toolbarPrimaryColor;
-        if(!ipCamPreferences.streamingEnabled().get()){
+        if (!ipCamPreferences.streamingEnabled().get()) {
             colorResId = R.color.disabled_straming_background;
         }
         frameContainer.setBackgroundColor(getResources().getColor(colorResId));
     }
 
+    /**
+     * Handle option item start streaming click.
+     */
     @OptionsItem(R.id.mi_activity_startup_start_stream)
     void onStartStreaming() {
-        IntentHelpers.startStreaming(this, ipCamPreferences, false);
+        IntentHelper.startStreaming(this, ipCamPreferences, false);
     }
 
+    /**
+     * Show about page on menu item click.
+     */
     @OptionsItem(R.id.mi_activity_startup_about)
     void showAboutDialog() {
         new MaterialDialog.Builder(this)
@@ -228,6 +261,9 @@ public class StartupActivity
                 .show();
     }
 
+    /**
+     * Show change password dialog on menu item click.
+     */
     @OptionsItem(R.id.mi_activity_startup_change_password)
     void showChangePasswordDialog() {
         final ChangePasswordView view = ChangePasswordView_.build(this);
@@ -268,6 +304,9 @@ public class StartupActivity
                 .show();
     }
 
+    /**
+     * Showing stream settings dialog when clicking menu item.
+     */
     @OptionsItem(R.id.mi_activity_startup_change_settings)
     void showStreamSettingsDialog() {
         final StreamSettingsView view = StreamSettingsView_.build(this);
@@ -309,12 +348,18 @@ public class StartupActivity
                 .show();
     }
 
+    /**
+     * Registration for to application server.
+     *
+     * @param error     error code
+     * @param exception exception to log
+     */
     @Override
-    public void onRegistrationFinished(int error, Throwable exception) {
-        if (error == GcmRestClient.ERROR_NONE) {
+    public void onRegistrationFinished(@ApplicationServerRestClient.RegistrationErrors int error, Throwable exception) {
+        if (error == ApplicationServerRestClient.ERROR_NONE) {
             logi("Registration id was sent to server.");
             checkEverythingIsOkAsync();
-        } else if (error == GcmRestClient.ERROR_NOT_SUCCESSFUL) {
+        } else if (error == ApplicationServerRestClient.ERROR_NOT_SUCCESSFUL) {
             logi("Registration ID could not be sent to server.");
             String errorMsg = exception.getMessage();
             loge(errorMsg, exception);
@@ -325,7 +370,7 @@ public class StartupActivity
     @Override
     public void onDismiss(DialogInterface dialog) {
         // This is called when setting password is dismissed
-        // if the password is showrter than 6 chars we show it again
+        // if the password is shorter than 6 chars we show it again
         if (ipCamPreferences.accessPassword().get().length() < 6) {
             showChangePasswordDialog();
         }
@@ -364,19 +409,17 @@ public class StartupActivity
 
     @Override
     public void onShareClick() {
-        startActivity(IntentHelpers.createShareIntent(ipCamPreferences));
+        startActivity(IntentHelper.createShareIntent(ipCamPreferences));
     }
 
     @Override
     public void onStopStreamingClick() {
-
     }
 
     @Override
     public void onClick(View v) {
         checkEverythingIsOkAsync();
     }
-
 
     @Override
     public void onCheckedChanged(Switch aSwitch, boolean b) {

@@ -46,7 +46,7 @@
         </receiver>
 
         <service android:name=".service.GcmIntentService_" />
-        <service android:name=".service.IpCamPreviewWindow_" />
+        <service android:name=".service.IPCameraPreviewWindow_" />
 
     </application>
 </manifest>

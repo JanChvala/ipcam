@@ -1,4 +1,4 @@
-package cz.janchvala.android.gcm.ui.view;
+package cz.janchvala.android.ipcamera.ui.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -20,9 +20,11 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 import java.util.ArrayList;
 
 import cz.janchvala.android.ipcamera.R;
-import cz.janchvala.android.ipcamera.preferences.IPcamPreferences_;
+import cz.janchvala.android.ipcamera.preferences.IPCameraPreferences_;
 
 /**
+ * View containing input fields for setting the stream settings.
+ * <p/>
  * Created by jan on 13.03.2015.
  */
 @EViewGroup(R.layout.view_stream_settings)
@@ -50,7 +52,7 @@ public class StreamSettingsView extends LinearLayout implements Spinner.OnItemSe
     TextView minFrameRateLabel;
 
     @Pref
-    IPcamPreferences_ prefs;
+    IPCameraPreferences_ prefs;
 
     ArrayList<String> resolutions = Lists.newArrayList("320:180", "320:240", "640:480", "960:720", "1280:720", "1920:1080");
 
@@ -73,7 +75,7 @@ public class StreamSettingsView extends LinearLayout implements Spinner.OnItemSe
 
         etServerUrl.setText(prefs.serverUrl().get());
 
-        minResolution.setAdapter(new ArrayAdapter<>(getContext(),R.layout.spinner_view, resolutions));
+        minResolution.setAdapter(new ArrayAdapter<>(getContext(), R.layout.spinner_view, resolutions));
         minResolution.setSelection(resolutions.indexOf(minRes));
         minResolution.setOnItemSelectedListener(this);
 
@@ -90,7 +92,7 @@ public class StreamSettingsView extends LinearLayout implements Spinner.OnItemSe
         setFrameRateLabel();
     }
 
-    private int getResolution(int index, int part){
+    private int getResolution(int index, int part) {
         String parts[] = resolutions.get(index).split(":");
         return Integer.parseInt(parts[part]);
     }
@@ -99,48 +101,46 @@ public class StreamSettingsView extends LinearLayout implements Spinner.OnItemSe
         return etServerUrl.getText().toString();
     }
 
-    public int getMinWidth(){
+    public int getMinWidth() {
         return getResolution(minResolution.getSelectedItemPosition(), 0);
     }
 
-    public int getMinHeight(){
+    public int getMinHeight() {
         return getResolution(minResolution.getSelectedItemPosition(), 1);
     }
 
-    public int getMaxWidth(){
+    public int getMaxWidth() {
         return getResolution(maxResolution.getSelectedItemPosition(), 0);
     }
 
-    public int getMaxHeight(){
+    public int getMaxHeight() {
         return getResolution(maxResolution.getSelectedItemPosition(), 1);
     }
 
-    public int getBandwidth(){
+    public int getBandwidth() {
         return Math.round(bandwidth.getValue());
     }
 
-    public int getMinFrameRate(){
+    public int getMinFrameRate() {
         return Math.round(minFrameRate.getValue());
     }
 
-    private void setBandwidthLabel()
-    {
+    private void setBandwidthLabel() {
         minBandwidthLabel.setText(getContext().getString(R.string.bandwidth_label, getBandwidth()));
     }
 
-    private void setFrameRateLabel()
-    {
+    private void setFrameRateLabel() {
         minFrameRateLabel.setText(getContext().getString(R.string.framerate_label, getMinFrameRate()));
     }
 
     @Override
     public void onItemSelected(Spinner spinner, View view, int position, long l) {
         if (spinner.equals(minResolution)) {
-            if(maxResolution.getSelectedItemPosition() < position){
+            if (maxResolution.getSelectedItemPosition() < position) {
                 maxResolution.setSelection(position);
             }
         } else {
-            if(minResolution.getSelectedItemPosition() > position){
+            if (minResolution.getSelectedItemPosition() > position) {
                 minResolution.setSelection(position);
             }
         }

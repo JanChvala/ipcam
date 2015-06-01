@@ -1,4 +1,4 @@
-package cz.janchvala.android.gcm.ui.fragment;
+package cz.janchvala.android.ipcamera.ui.fragment;
 
 import android.app.Fragment;
 import android.view.View;
@@ -17,6 +17,8 @@ import cz.janchvala.android.ipcamera.tools.RobotoTools;
 import cz.janchvala.android.ipcamera.tools.ViewTools;
 
 /**
+ * ProgressCardFragment is used to show progress of registration in StartupActivity.
+ * <p/>
  * Created by jan on 13.03.2015.
  */
 @EFragment(R.layout.fragment_progress_card)
@@ -104,6 +106,4 @@ public class ProgressCardFragment extends Fragment {
             vImage.setOnClickListener(callback);
         }
     }
-
-
 }

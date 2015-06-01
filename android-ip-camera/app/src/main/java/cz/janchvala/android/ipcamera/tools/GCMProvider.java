@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cz.janchvala.android.ipcamera.IpCameraApplication_;
-import cz.janchvala.android.ipcamera.preferences.IPcamPreferences_;
+import cz.janchvala.android.ipcamera.preferences.IPCameraPreferences_;
 
 /**
  * GCMProvider is helper for GoogleCloudMessaging registration.
@@ -23,7 +23,7 @@ public class GCMProvider {
     private static final int MAX_TRY_COUNT = 3;
 
     @Pref
-    IPcamPreferences_ ipCamPreferences;
+    IPCameraPreferences_ ipCamPreferences;
 
     GoogleCloudMessaging gcm;
     AtomicInteger tryCounter = new AtomicInteger(0);

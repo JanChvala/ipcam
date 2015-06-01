@@ -51,7 +51,7 @@
     <string name="stream_setting">Stream settings</string>
     <string name="bandwidth_label">Bandwidth - %1$s kb/s</string>
     <string name="framerate_label">Frame rate - %1$s</string>
-    <string name="english_about">This is sample project which is used for demonstration the principles described in my master thesis. The goal was to create Android IP camera application with the ability to show the camera content from the web page. The application has to work in even if the Android device is behind Network Address Translator (NAT).\n\nWeb Real Time Communication (WebRTC) and Google Cloud Messaging are the main implementation pillars. You can read the whole master thesis to find out more.\n\nTo find out more information about this project, please visit:\nhttp://ipcam.janchvala.cz/thesis</string>
+    <string name="english_about">This is sample project which is used for demonstration the principles described in my master thesis. The goal was to create Android IP camera application with the ability to show the camera content from the web page. The application has to work in even if the Android device is behind Network Address Translator (NAT).\n\nWeb Real Time Communication (WebRTC) and Google Cloud Messaging are the main implementation pillars. You can read the whole master thesis to find out more.\n\nTo find out more information about this project, please visit:\nhttp://ipcam.janchvala.cz/</string>
     <string name="english">English</string>
     <string name="error">Error</string>
 

@@ -1,4 +1,4 @@
-package cz.janchvala.android.gcm.ui.fragment;
+package cz.janchvala.android.ipcamera.ui.fragment;
 
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
@@ -25,24 +25,27 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import cz.janchvala.android.ipcamera.R;
-import cz.janchvala.android.gcm.ui.activity.IStreamingCallbacks;
-import cz.janchvala.android.ipcamera.preferences.IPcamPreferences_;
+import cz.janchvala.android.ipcamera.preferences.IPCameraPreferences_;
 import cz.janchvala.android.ipcamera.tools.EmptyAnimationListener;
 import cz.janchvala.android.ipcamera.tools.RobotoTools;
 import cz.janchvala.android.ipcamera.tools.TypeFaceTools;
 import cz.janchvala.android.ipcamera.tools.ViewTools;
 
 /**
+ * This fragment is shown when successfully registered for GCM and application server.
+ * <p/>
  * Created by jan on 13.03.2015.
  */
 @EFragment(R.layout.fragment_ready_to_connect_card)
 public class ReadyToConnectCardFragment extends Fragment implements View.OnClickListener, IStreamingCallbacks {
-    public interface Callbacks {
 
+    /**
+     * Share and stop streaming callbacks.
+     */
+    public interface Callbacks {
         void onShareClick();
 
         void onStopStreamingClick();
-
     }
 
     @ViewById(R.id.cv_fragment_base_card_card_view)
@@ -64,7 +67,7 @@ public class ReadyToConnectCardFragment extends Fragment implements View.OnClick
     TypeFaceTools ttfTools;
 
     @Pref
-    IPcamPreferences_ ipCamPreferences;
+    IPCameraPreferences_ ipCamPreferences;
 
     Callbacks mCallback;
 
@@ -173,8 +176,6 @@ public class ReadyToConnectCardFragment extends Fragment implements View.OnClick
                         vCardContainer.setVisibility(View.VISIBLE);
                     }
                 });
-
-        // TODO: change stop button to share button and show the card
     }
 
     public void refreshStreamInformation() {

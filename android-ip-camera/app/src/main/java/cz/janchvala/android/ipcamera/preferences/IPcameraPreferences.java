@@ -8,14 +8,14 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
 import cz.janchvala.android.ipcamera.R;
 
 /**
- * Shared preferences for storing registration information.
+ * Shared preferences for storing registration information and stream settings.
  *
  * @author xchval01 on 22. 10. 2014.
  */
 @SharedPref(value = SharedPref.Scope.APPLICATION_DEFAULT)
-public interface IPcamPreferences {
+public interface IPCameraPreferences {
 
-    @DefaultString(keyRes = R.string.preferences_server_url, value = "http://ipcam.janchvala.cz") // "http://83.167.253.81:12784/subdomain/ipcam", "http://10.0.0.10:8080/subdomain/ipcam")
+    @DefaultString(keyRes = R.string.preferences_server_url, value = "http://ipcam.janchvala.cz")
     String serverUrl();
 
     @DefaultString(keyRes = R.string.preferences_access_hash, value = "")
@@ -37,7 +37,6 @@ public interface IPcamPreferences {
     int registrationCountServer();
 
 
-
     /**
      * Substitute you own sender ID here. This is the project number you got
      * from the API Console, as described in "Getting Started."
@@ -47,7 +46,6 @@ public interface IPcamPreferences {
 
     @DefaultString(keyRes = R.string.preferences_gcm_registration_id, value = "")
     String gcmRegistrationId();
-
 
 
     @DefaultInt(keyRes = R.string.preferences_stream_min_width, value = 1280)

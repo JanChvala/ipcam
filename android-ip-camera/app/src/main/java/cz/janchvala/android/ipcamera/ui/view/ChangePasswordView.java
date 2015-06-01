@@ -1,4 +1,4 @@
-package cz.janchvala.android.gcm.ui.view;
+package cz.janchvala.android.ipcamera.ui.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,6 +20,8 @@ import org.androidannotations.annotations.ViewById;
 import cz.janchvala.android.ipcamera.R;
 
 /**
+ * Simple view for changing the password. This view is inflated inside dialog.
+ * <p/>
  * Created by jan on 13.03.2015.
  */
 @EViewGroup(R.layout.view_change_password)

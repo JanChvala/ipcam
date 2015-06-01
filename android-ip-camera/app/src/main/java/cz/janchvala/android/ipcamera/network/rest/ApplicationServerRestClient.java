@@ -16,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import cz.janchvala.android.ipcamera.network.bean.DeviceRegistration;
 import cz.janchvala.android.ipcamera.network.bean.Token;
-import cz.janchvala.android.ipcamera.preferences.IPcamPreferences_;
+import cz.janchvala.android.ipcamera.preferences.IPCameraPreferences_;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -27,24 +27,24 @@ import retrofit.client.OkClient;
  * Created by xchval01 on 12.02.2015.
  */
 @EBean(scope = EBean.Scope.Singleton)
-public class GcmRestClient {
+public class ApplicationServerRestClient {
 
     public static final int ERROR_NONE = 0;
     public static final int ERROR_NOT_SUCCESSFUL = 1;
 
+    /**
+     * Definition of error codes.
+     */
     @IntDef({ERROR_NONE, ERROR_NOT_SUCCESSFUL})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface RegistrationErrors {}
-
-    public interface RegistrationCallbacks {
-        void onRegistrationFinished(@RegistrationErrors int error, Throwable exception);
+    public @interface RegistrationErrors {
     }
 
     @Pref
-    IPcamPreferences_ ipCamPreferences;
+    IPCameraPreferences_ ipCamPreferences;
 
     public Token registerApplication(DeviceRegistration deviceRegistration) {
-        IGcmRestAPI api = createRestApi(IGcmRestAPI.class);
+        IApplicationServerRestAPI api = createRestApi(IApplicationServerRestAPI.class);
 
         // Fetch and print a list of the contributors to this library.
         return api.registerDevice(deviceRegistration);

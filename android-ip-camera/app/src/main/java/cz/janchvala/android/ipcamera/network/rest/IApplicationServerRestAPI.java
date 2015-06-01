@@ -10,7 +10,7 @@ import retrofit.http.POST;
  * <p/>
  * Created by xchval01 on 20. 2. 2015.
  */
-public interface IGcmRestAPI {
+public interface IApplicationServerRestAPI {
 
     /**
      * Method is called when device gains registrationID for GCM. This ID has to be saved on server
