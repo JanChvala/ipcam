@@ -140,7 +140,7 @@ public class IPCameraPreviewWindow extends StandOutWindow {
 
 
     /**
-     * Setting the layout for 400dp × 300dp. Right bottom alignment.
+     * Setting the layout for 400dp * 300dp. Right bottom alignment.
      *
      * @param id     service window id
      * @param window Window instance
