@@ -1,0 +1,38 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="cz.janchvala.android.gcm.ui.activity.StartupActivity">
+
+    <item
+        android:id="@+id/mi_toolbar_switch_action"
+        android:orderInCategory="0"
+        android:title="@string/streaming_enabled"
+        app:actionLayout="@layout/toolbar_switch_action"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/mi_activity_startup_start_stream"
+        android:orderInCategory="1"
+        android:title="@string/start_streaming"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/mi_activity_startup_change_password"
+        android:orderInCategory="2"
+        android:title="@string/change_password"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/mi_activity_startup_change_settings"
+        android:orderInCategory="3"
+        android:title="@string/change_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/mi_activity_startup_about"
+        android:orderInCategory="4"
+        android:title="@string/about"
+        app:showAsAction="never" />
+
+</menu>

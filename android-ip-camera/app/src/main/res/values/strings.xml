@@ -1,0 +1,64 @@
+<resources>
+    <!-- START: PREFERENCE KEYS -->
+    <string name="preferences_server_url" translatable="false">preferences_server_url</string>
+    <string name="preferences_app_version" translatable="false">preferences_app_version</string>
+    <string name="preferences_registered_on_server" translatable="false">preferences_registered_on_server</string>
+    <string name="preferences_access_hash" translatable="false">preferences_access_hash</string>
+
+    <string name="preferences_try_count_google_play_services" translatable="false">preferences_try_count_google_play_services</string>
+    <string name="preferences_try_count_gcm" translatable="false">preferences_try_count_gcm</string>
+    <string name="preferences_try_count_server_registration" translatable="false">preferences_try_count_server_registration</string>
+
+    <string name="preferences_gcm_sender_id" translatable="false">preferences_gcm_sender_id</string>
+    <string name="preferences_gcm_registration_id" translatable="false">preferences_gcm_registration_id</string>
+
+    <string name="preferences_stream_min_width" translatable="false">preferences_stream_min_width</string>
+    <string name="preferences_stream_min_height" translatable="false">preferences_stream_min_height</string>
+    <string name="preferences_stream_max_width" translatable="false">preferences_stream_max_width</string>
+    <string name="preferences_stream_max_height" translatable="false">preferences_stream_max_height</string>
+    <string name="preferences_stream_bandwidth" translatable="false">preferences_stream_bandwidth</string>
+    <string name="preferences_stream_min_frame_rate" translatable="false">preferences_stream_min_frame_rate</string>
+    <string name="preferences_stream_max_frame_rate" translatable="false">preferences_stream_max_frame_rate</string>
+    <string name="preferences_stream_access_password" translatable="false">preferences_stream_access_password</string>
+    <string name="preferences_stream_enabled" translatable="false">preferences_stream_enabled</string>
+    <!-- END: PREFERENCE KEYS -->
+
+    <string name="app_name">Android IP camera</string>
+    <string name="app_subtitle">Streaming video using WebRTC technology</string>
+
+    <string name="startup_activity">Startup Activity</string>
+
+    <string name="about">About</string>
+    <string name="change_password">Change password</string>
+    <string name="password">Password</string>
+    <string name="close">Close</string>
+    <string name="about_content_section_one">This is about fragment where should be some information about this application.</string>
+    <string name="show_password">Show password</string>
+
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="random">Random</string>
+    <string name="registration">Registration</string>
+    <string name="getting_things_ready">Getting things ready</string>
+    <string name="google_cloud_messaging">Google Cloud Messaging</string>
+    <string name="google_play_services">Google Play services</string>
+    <string name="ready_to_connect">Ready to stream</string>
+    <string name="share_subject">Watch my IP camera</string>
+    <string name="share_message">Hi I have IP camera which is ready to stream.\nYou can start the stream by visiting the URL below and providing the password.\n\nURL:\n     %1$s</string>
+    <string name="share">Share</string>
+    <string name="ip_cam_streaming">IP camera is streaming.</string>
+    <string name="change_settings">Change stream settings</string>
+    <string name="stream_setting">Stream settings</string>
+    <string name="bandwidth_label">Bandwidth - %1$s kb/s</string>
+    <string name="framerate_label">Frame rate - %1$s</string>
+    <string name="english_about">This is sample project which is used for demonstration the principles described in my master thesis. The goal was to create Android IP camera application with the ability to show the camera content from the web page. The application has to work in even if the Android device is behind Network Address Translator (NAT).\n\nWeb Real Time Communication (WebRTC) and Google Cloud Messaging are the main implementation pillars. You can read the whole master thesis to find out more.\n\nTo find out more information about this project, please visit:\nhttp://ipcam.janchvala.cz/thesis</string>
+    <string name="english">English</string>
+    <string name="error">Error</string>
+
+    <string name="streaming_enabled">Streaming enabled</string>
+    <string name="streaming_disabled">Streaming disabled</string>
+    <string name="start_streaming">Start streaming</string>
+    <string name="server_base_url">Server base url</string>
+
+
+</resources>

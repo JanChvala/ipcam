@@ -1,0 +1,162 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        // the latest version of the android-apt plugin
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.8'
+    }
+}
+
+apply plugin: 'com.github.ben-manes.versions'
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.tmiyamon.mdicons'
+apply plugin: 'com.neenbedankt.android-apt'
+
+mdicons {
+    pattern '(cloud_done|cloud_queue|refresh)_grey600_48dp|' +
+            'videocam_black_48dp|' +
+            'lock_grey600_48dp|' +
+            'open_with_white_24dp|' +
+            '(stop|share)_white_24dp'
+}
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "cz.janchvala.android.ipcamera"
+        testApplicationId "cz.janchvala.android.ipcam.test"
+
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 1
+        versionName "0.0.1"
+    }
+
+    /**
+     * We use only default (debug, release) build types for now. Debug BT is set not to obfuscate code
+     */
+    buildTypes {
+        debug {
+            /** we need to enable minify in order to get shrinkResources working */
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt', 'proguard-debug.txt'
+        }
+
+        release {
+            /** we need to enable minify in order to get shrinkResources working */
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    /**
+     * compiling against Java7 (we get some benefits as multiCatch,..)
+     */
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    /**
+     * pick first resource when packaging
+     */
+    packagingOptions {
+        pickFirst 'META-INF/notice.txt'
+        pickFirst 'META-INF/license.txt'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/NOTICE'
+    }
+}
+
+/**
+ * APT plugin for AndroidAnnotations pre processing
+ */
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].variantOutputData.processResourcesTask.manifestFile
+        // If you're using Android NBS flavors you should use the following line instead of hard-coded packageName
+        resourcePackageName android.defaultConfig.applicationId
+
+        trace true
+        logLevel 'DEBUG'
+    }
+}
+
+
+dependencies {
+	/**
+     * include libraries in libs folder
+     */
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    /**
+     * AndroidAnnotations pre processing library provides annotations for "Code on diet" development.
+     */
+    apt 'org.androidannotations:androidannotations:3.3.1'
+    compile 'org.androidannotations:androidannotations-api:3.3.1'
+
+    /**
+     * Google play services are used for Google Cloud Messaging
+     */
+    compile 'com.google.android.gms:play-services-gcm:7.3.0'
+
+    /**
+     * We also use the @Rest annotations for Rest communication so spring-android is needed too.
+     * Jackson is used as payload (de)serializer.
+     */
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.2'
+
+
+    /**
+     * support android annotations provides useful annotations for handling resources and nulls
+     */
+    compile 'com.android.support:support-annotations:22.1.1'
+
+    /**
+     * Support (compatibility)
+     */
+    compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:palette-v7:22.1.1'
+    compile 'com.android.support:cardview-v7:22.1.1'
+    compile 'com.android.support:recyclerview-v7:22.1.1'
+    compile 'com.android.support:gridlayout-v7:22.1.1'
+
+    /**
+     * Google Guava utility library
+     */
+    compile 'com.google.guava:guava:18.0'
+
+    /**
+     * material design stuff
+     */
+    compile 'com.github.rey5137:material:1.1.1'
+    compile 'com.afollestad:material-dialogs:0.7.4.2'
+
+    /**
+     * HTTP related libraries
+     */
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
+    compile 'com.squareup.okio:okio:1.3.0'
+
+    /**
+     * using the library for floating window with streaming video.
+     */
+    compile 'com.github.sherpya:standout:1.0.3'
+
+    /**
+     * Stetho
+     */
+    compile 'com.facebook.stetho:stetho:1.1.0'
+    compile 'com.facebook.stetho:stetho-okhttp:1.1.0'
+}

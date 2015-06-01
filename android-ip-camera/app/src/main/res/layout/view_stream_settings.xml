@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.rey.material.widget.EditText
+        android:id="@+id/et_view_stream_settings_server_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/server_base_url"
+        android:textColor="@color/primary_text_default_material_light"
+        android:textColorHint="@color/primary_text_default_material_light"
+        android:textCursorDrawable="@drawable/cursor_accent_color"
+        app:et_dividerColor="@color/button_material_dark"
+        app:et_dividerHeight="2dp"
+        app:et_helper="Changes will cause app registration reset"
+        app:et_labelEnable="true"
+        app:et_labelTextColor="@color/primary_text_default_material_light"
+        app:et_supportMode="helper"
+        app:et_supportTextColor="@color/primary_text_default_material_light" />
+
+    <com.rey.material.widget.Spinner
+        android:id="@+id/s_view_stream_settings_min_resolution"
+        style="@style/Material.Widget.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:rd_style="@style/Material.Drawable.Ripple.Wave"
+        app:spn_arrowPadding="8dp"
+        app:spn_dividerColor="@color/button_material_dark"
+        app:spn_label="Minimum Resolution"
+        app:spn_labelEnable="true"
+        app:spn_labelTextColor="@color/primary_text_default_material_light" />
+
+    <com.rey.material.widget.Spinner
+        android:id="@+id/s_view_stream_settings_max_resolution"
+        style="@style/Material.Widget.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:rd_style="@style/Material.Drawable.Ripple.Wave"
+        app:spn_arrowPadding="8dp"
+        app:spn_dividerColor="@color/button_material_dark"
+        app:spn_label="Maximum Resolution"
+        app:spn_labelEnable="true"
+        app:spn_labelTextColor="@color/primary_text_default_material_light" />
+
+    <TextView
+        android:id="@+id/tv_view_stream_settings_bandwidth_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/primary_text_default_material_light"
+        tools:text="Bandwidth - 50kb/s" />
+
+    <com.rey.material.widget.Slider
+        android:id="@+id/sl_view_stream_settings_bandwidth"
+        style="@style/Material.Widget.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:rd_style="@style/Material.Drawable.Ripple.Wave"
+        app:sl_discreteMode="true"
+        app:sl_maxValue="8000"
+        app:sl_minValue="50"
+        app:sl_primaryColor="@color/toolbarAccentColor"
+        app:sl_secondaryColor="@color/button_material_dark"
+        app:sl_stepValue="50"
+        app:sl_trackCap="butt"
+        app:sl_travelAnimDuration="100"
+        app:sl_value="3000" />
+
+    <TextView
+        android:id="@+id/tv_view_stream_settings_frame_rate_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/primary_text_default_material_light"
+        tools:text="Minimum frame rate - 30" />
+
+    <com.rey.material.widget.Slider
+        android:id="@+id/sl_view_stream_settings_min_frame_rate"
+        style="@style/Material.Widget.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:rd_style="@style/Material.Drawable.Ripple.Wave"
+        app:sl_discreteMode="true"
+        app:sl_maxValue="60"
+        app:sl_minValue="5"
+        app:sl_primaryColor="@color/toolbarAccentColor"
+        app:sl_secondaryColor="@color/button_material_dark"
+        app:sl_stepValue="1"
+        app:sl_trackCap="butt"
+        app:sl_travelAnimDuration="100"
+        app:sl_value="30" />
+
+</LinearLayout>
