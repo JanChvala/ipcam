@@ -1,0 +1,17 @@
+%=========================================================================
+% This cahpter should introduce main goals of the thesis itself brief 
+% description of the topic and the structure of the thesis.
+\chapter{Introduction}
+\label{chap:chapter1}
+Last twenty years of technological innovation and development has brought us Internet Protocol (IP) cameras which are part of our everyday life. As a result of hardware cheapening the application of IP cameras is not restricted only for the enterprise usage but small companies, shops and even houses are protected with them more and more often. Anyone can buy expensive IP cameras or cheaper variations but there is no easy--to--use solution if you just want to test an IP camera without spending any money.
+
+Software is also evolving very fast. The Web Real Time Communications (WebRTC) technology is being developed in recent years. The first technology of its kind for enabling peer--to--peer connection between two endpoints in the internet. It is still not yet completely standardized in the time of writing this thesis. But together with technological draft the reference implementation is developed as open--source project and major web browsers like Chrome, Firefox or Opera claim to support WebRTC or at least the main parts of it.
+
+Mobile devices have the hardware necessities to be used as temporary IP cameras. The wireless connectivity is present and integrated cameras have sufficient resolution even for low cost devices. WebView (Android's native component with web browser engine) supports WebRTC technology for Android version 5.0 and above which makes it the right candidate for the mobile part of the resultant system.
+
+This thesis will focus on exploration of this new technology for creating simple system for video streaming from Android device. The application will allow user to start the stream remotely by using Google Cloud Messaging (GCM) and view the stream on a web page. 
+
+The beginning of the thesis (chapter \ref{chap:chapter2}) focuses on WebRTC which is the main implementation pillar for the resultant system. Then the Android Operating System and its relevant parts are described in chapter \ref{chap:chapter3}.
+Chapter \ref{chap:chapter4} covers information about GCM technology used for sending messages from server to mobile application client.
+Design of the resultant system and its implementation are described in chapter \ref{chap:chapter5}. Testing and measurements are in chapter \ref{chap:chapter6}.
+The very last chapter \ref{chap:chapter7} summarize the results of this master thesis.

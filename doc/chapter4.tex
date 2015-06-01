@@ -1,0 +1,145 @@
+%========================================================================================
+\chapter{Google Cloud Messaging}
+\label{chap:chapter4}
+Google Cloud Messaging (GCM) for Android is a free service allowing to send messages from server to GCM--enabled applications. These messages can be used to initiate some action or to send messages with content to a specific application.
+
+This service is an important part of the resultant system. It allows us to start Android application and initiate streaming just in time when playback is requested.
+
+Google Cloud Messaging is supported on Android with version 2.2 (Froyo) as minimum.
+
+%----------------------------------------------------------------------------------------
+\section{Architecture overview}
+\label{sec:gcm_architecture}
+GCM implementation consists of three main components which communicate between each other as shown in figure \ref{sec:gcm_architecture}.
+
+\subsection{Components}
+There are three components in GCM.
+
+\insertImg[0.8]{GCM-architecture.pdf}{Google Cloud Messaging components interaction}{gcm_architecture}
+
+\subsubsection{GCM connection Servers}\vspace{-0.5em}
+This is the main component placed in between the client applications and application server which provides connectivity and services for sending messages to client applications. These servers are private and owned by Google Inc.. Currently there is HTTP and XMPP protocol support.
+
+\subsubsection{Application server}\vspace{-0.5em}
+This component has to be implemented. Its main purpose is to receive registration IDs from clients so that it can use them later on for sending messages to them via GCM connection servers.
+
+
+\subsubsection{Client application}\vspace{-0.5em}
+GCM--enabled Android application has to be registered on GCM connection servers to get identification. It can then receive downstream messages from a server or send upstream messages to a server\footnote{Upstream messages are possible to be sent only when using XMPP protocol.}.
+
+\subsection{Credentials}
+Identification tokens are used for authentication and to ensure that the message reaches the correct destination.
+
+\subsubsection{Sender ID}\vspace{-0.5em}
+This is the number of projects registered in Google API console. It is used to identify a server when sending messages and also for client registration to allow messages from specific server.
+
+\subsubsection{Sender auth token}\vspace{-0.5em}
+This token is used for application server authentication. It has to be included in the headers of POST request.
+
+\subsubsection{Application ID}\vspace{-0.5em}
+Application ID (package name) is used for applications on registering to GCM on Android platform. This ID should be used to ensure that messages are sent to the right application.
+
+\subsubsection{Registration ID}\vspace{-0.5em}
+This ID is generated upon client application registration from GCM connection servers and it is essential for client application identification for sending a message.
+
+
+%----------------------------------------------------------------------------------------
+\section{Sending Messages from application server}
+\label{sec:gcm_send}
+Application server has essential role in GCM implementation. It has to be able to communicate with GCM--enabled clients and GCM connection servers. It has to be capable of collecting registration IDs from clients and save them so that they can be used later on when sending messages.
+
+\subsection{Types of GCM Connection servers}
+There are two types of GCM connection servers which differ from each other by the used communication protocol --- HTTP and XMPP. The capabilities are also different so it is possible to use them separately or both at the same time.
+
+The HTTP implementation can send only downstream (cloud--to--device) synchronous messages with maximum payload size 4KB of data. The payload can be plain text or JSON object and it also supports multicast messages (JSON only).
+
+The XMPP implementation on the other hand can send both downstream and upstream (device--to--cloud) messages. The messages are sent asynchronously over the persistent XMPP connection and the response is also received asynchronously. The format of the response is JSON object representing acknowledgement (ACK) or negative--acknowledgement (NACK). XMPP supports only JSON message format which is encapsulated in XMPP message and it does not support multicast messages.
+
+\subsection{Sending messages}
+In order to send a message, we have to follow these four steps:
+\begin{enumerate}
+	\item Application server sends a message to GCM connection servers.
+	\item The message is stored on GCM connection server and enqueued for further processing.
+	\item GCM connection server sends the message to online devices immediately or waits until they get online.
+	\item GCM--enabled device receives the message.
+\end{enumerate}
+
+When creating the message request you have to specify the target and add some extra properties or payload to the message.
+
+\subsubsection{Target}\vspace{-0.5em}
+This is the required part of the message. It is represented by registration ID of GCM--enabled client application.
+
+\subsubsection{Options}\vspace{-0.5em}
+The message may contain additional options which specify the message behaviour or lifetime. Some of the options:
+
+\begin{enumerate}
+	\item \verb!collapse_key! -- Only one message with the same \verb!collapse_key! will be delivered when device is offline even if a server sent more of them.
+	\item \verb!delay_while_idle! -- This option indicates that the message should be delivered in time that the device is active.
+\end{enumerate}
+
+
+\subsubsection{Payload}\vspace{-0.5em}
+Extra data can be sent together with a message. They should be included in parameter \texttt{data} and they are optional. Maximum size of payload is 4KB.
+
+
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+\section{Receiving Messages on Client}
+\label{sec:gcm_receive}
+Client application has to follow certain steps to be able to receive messages via GCM services. Firstly it needs to be registered for GCM, tell the application server about it and finally wait for incoming messages.
+
+This section does not fully cover the client application implementation details. For further information see \cite{android-gcm}.
+
+\subsection{Import Google Cloud Messaging API}
+GoogleCloudMessaging API provides the simplest way of working with GCM on Android. It is one of Google Play Services modules and it can be easily included in Gradle based projects like this:
+
+\begin{lstlisting}
+dependencies {
+  compile "com.google.android.gms:play-services-gcm:7.3.0"
+}
+\end{lstlisting}
+
+\subsection{Android Manifest update}
+GoogleCloudMessaging API needs some permission to be able to work. This permission has to be set inside Android Manifest file.
+
+\begin{itemize}
+\item \verb!android.permission.INTERNET!
+\item \verb!android.permission.GET_ACCOUNTS!
+
+\item \verb!{PACKAGE_NAME}.permission.C2D_MESSAGE!
+\end{itemize}
+
+Where \verb!{PACKAGE_NAME}! is the application ID.\\
+
+It is the best practice to receive messages via BroadcastReceiver and pass it to Service which requires another Manifest modifications. BroadcastReceiver has to specify the permission for receiving messages \verb!com.google.android.c2dm.permission.SEND! and it also has to provide Intent filter:
+\begin{verbatim}
+<intent-filter>
+  <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+  <category android:name="{PACKAGE_NAME}" />
+</intent-filter>
+\end{verbatim}
+
+
+\subsection{Registering for Google Cloud Messaging}
+\label{ssec:gcm-register}
+Client application has to register itself to GCM in order to be able to receive messages. The registration ID which is returned should be sent to application server, saved there and kept in secret. When it is not possible to send the ID to server, the client application should unregister itself from GCM.
+
+The Registration process should be repeated when the client application was updated or restored from backup.
+
+The whole process and ID propagation is not instant and can take a couple of minutes. After it is finished the client can receive the first message.
+
+\begin{verbatim}
+GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+String registrationID = gcm.register(SENDER_ID);
+\end{verbatim}
+
+\verb!SENDER_ID! is the API application ID from Google API console and \verb!context! is an instance of Context class which can be obtained from Activity.
+
+
+
+

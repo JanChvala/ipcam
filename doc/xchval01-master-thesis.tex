@@ -1,0 +1,179 @@
+%============================================================================
+% tento soubor pouzijte jako zaklad
+% (c) 2008 Michal Bidlo
+% E-mail: bidlom AT fit vutbr cz
+%============================================================================
+% kodovaní: utf-8 (zmena prikazem iconv, recode nebo cstocs)
+%----------------------------------------------------------------------------
+% zpracování: make, make pdf, make desky, make clean
+% připomínky posílejte na e-mail: bidlom AT fit.vutbr.cz
+% vim: set syntax=tex encoding=latin2:
+%============================================================================
+\documentclass[english]{fitthesis} % odevzdani do wisu - odkazy, na ktere se da klikat
+%\documentclass[print, english]{fitthesis} % pro tisk - na odkazy se neda klikat
+
+
+% zde zvolime kodovani, ve kterem je napsan text prace
+% "latin2" pro iso8859-2 nebo "cp1250" pro windows-1250, "utf8" pro "utf-8"
+%\usepackage{ucs}
+\usepackage[T1,IL2]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>} \urlstyle{tt}}
+
+% doplnujici prikazy
+% ----------------------------------------------
+
+% todo oznacuje cast, ktere je se musi dodelat
+\newcommand{\todo}[1][something needs to be done in here\ldots]{\textcolor{red}{TODO: #1}}
+
+% phony se da vzuzit pro poznamky - sazi se sede
+\newcommand{\phony}[1]{\textcolor{gray}{#1}}
+
+% blind je zobrazi X odstavcu tupeho textu - vhodne pro simulovani delky jednotlivych casti
+\usepackage{blindtext}
+\newcommand{\blind}[1]{\textcolor{gray}{\Blindtext[#1]}}
+
+\newcommand{\insertImg}[4][1.0]{
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=#1\linewidth]{fig/#2}
+	\caption{#3}
+	\label{#4}
+\end{figure}
+}
+
+\usepackage{float}
+\newcommand{\insertImgHere}[4][1.0]{
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=#1\linewidth]{fig/#2}
+	\caption{#3}
+	\label{#4}
+\end{figure}
+}
+
+\newcommand{\todoImg}[1][0.5]{\insertImg[#1]{placeholder.pdf}{\todo[Replace with real image\ldots]}{todo}}
+
+
+% Pouzita literatura
+% ----------------------------------------------
+\ifczech
+  \usepackage[backend=biber, style=czechiso]{biblatex}
+\else 
+  \usepackage[backend=biber, style=trad-plain]{biblatex}
+  %\usepackage[backend=biber, style=trad-alpha]{biblatex}
+\fi
+
+
+\addbibresource{literatura.bib}
+\addbibresource{rfc.bib}
+
+%zde muzeme vlozit vlastni balicky
+\input{src_packages} % viz. packages.tex
+
+% =======================================================================
+% balíček "hyperref" vytváří klikací odkazy v pdf, pokud tedy použijeme pdflatex
+% problém je, že balíček hyperref musí být uveden jako poslední, takže nemůže
+% být v šabloně
+\ifWis
+\ifx\pdfoutput\undefined % nejedeme pod pdflatexem
+\else
+
+  \usepackage{color}
+  \usepackage[unicode,colorlinks,hyperindex,plainpages=false,pdftex]{hyperref}
+  \definecolor{links}{rgb}{0.25,0.32,0.71}
+  \definecolor{anchors}{rgb}{1,0,0}
+  \def\AnchorColor{anchors}
+  \def\LinkColor{links}
+  \def\pdfBorderAttrs{/Border [0 0 0] }  % bez okrajů kolem odkazů
+  \pdfcompresslevel=9
+  
+  \definecolor{mdindigo}{HTML}{3F51B5}
+  \definecolor{mdred}{HTML}{F44336}
+  \definecolor{mdgreen}{HTML}{4CAF50}
+  \hypersetup{
+	urlcolor=mdindigo,
+	linkcolor=mdred,
+	citecolor=mdgreen
+  }
+\fi
+\fi
+
+
+
+%Informace o praci/projektu
+%---------------------------------------------------------------------------
+\projectinfo{
+  %Prace
+  project=DP,            %typ prace BP/SP/DP/DR
+  year=2015,             %rok
+  date=\today,           %datum odevzdani
+  %Nazev prace
+  title.cs={Android IP kamera},  %nazev prace v cestine
+  title.en={Android IP camera}, %nazev prace v anglictine
+  %Autor
+  author={Jan Chvála},   %jmeno prijmeni autora
+  author.title.p=Bc., %titul pred jmenem (nepovinne)
+  %author.title.a=PhD, %titul za jmenem (nepovinne)
+  %Ustav
+  department=UPGM, % doplnte prislusnou zkratku: UPSY/UIFS/UITS/UPGM
+  %Skolitel
+  supervisor={Adam Herout}, %jmeno prijmeni skolitele
+  supervisor.title.p={doc. Ing.},   %titul pred jmenem (nepovinne)
+  supervisor.title.a={Ph.D.},    %titul za jmenem (nepovinne)
+  %Klicova slova, abstrakty, prohlaseni a podekovani je mozne definovat 
+  %bud pomoci nasledujicich parametru nebo pomoci vyhrazenych maker (viz dale)
+  %===========================================================================
+  %Klicova slova
+  keywords.cs={Real Time Communications, WebRTC, Android, Google Cloud Messaging, IP kamera}, %klicova slova v ceskem jazyce
+  keywords.en={Real Time Communications, WebRTC, Android, Google Cloud Messaging, IP camera}, %klicova slova v anglickem jazyce
+  %Abstract
+  abstract.cs={
+Cílem této práce je navrhnout systém, který by umožnil odesílání dat z videokamery mobilního zařízení a jejich zobrazení v reálném čase prostřednictvím webového prohlížeče. Součástí práce je popis použitých technologií a také popis cílové implementační platformy Android.
+K řešení získání a přenosu multimediálních dat byla využita technologie Web Real Time Communications (WebRTC), která je nativně podporovaná novými prohlížeči a komponentou WebView (Android verze 5.0 a výše). Zasílání push notifikací ze strany serveru na mobilní zařízení pro spuštění streamu je řešeno pomocí Google Cloud Messaging technologie.
+Výsledný systém umožňuje uživateli pomocí webového prohlížeče spustit aplikaci na mobilním telefonu a tím zahájit přenos multimediálních dat. Ten je možné parametrizovat a zabezpečit pomocí hesla.
+Přínosem práce je seznámení s technologií WebRTC a demonstrace jejího snadného využití implementací IP kamery na platformě Android.
+}, % abstrakt v ceskem jazyce
+  abstract.en={
+The goal of this thesis is to design a system which would allow video data streaming from a mobile device and real time playback using a standard web browser. The technological background and the implementation platform are both part of this thesis.
+Web Real Time Communications (WebRTC) technology was used for acquiring multimedia data on mobile device. This technology is natively supported in the latest major web browsers and in WebView component (Android version 5.0 and above). Sending push notifications from a server to a mobile device to start the streaming is done with Google Cloud Messaging technology.
+The resultant system allows a user to start the application on mobile device with easy web browser access. This starts the multimedia stream from device, which can be parametrized and secured by password.
+The benefit of this thesis is the overview of WebRTC technology and its demonstration. The IP camera implementation shows how easy it is to use the WebRTC in real applications.
+}, % abstrakt v anglickem jazyce
+  %Prohlaseni
+  declaration={Prohlašuji, že jsem tuto diplomovou práci vypracoval samostatně pod vedením pana doc.~Ing. Adama Herouta~Ph.D. a že jsem uvedl všechny literární prameny, ze kterých jsem čerpal.},
+  %Podekovani (nepovinne)
+  acknowledgment={Tímto bych rád poděkoval mému vedoucímu diplomové práce panu doc.~Ing. Adamu Heroutovi,~Ph.D., za pomoc při výběru a formování tématu, odborné konzultace a potřebnou motivaci.} % nepovinne
+}
+
+\begin{document}
+  % Vysazeni titulnich stran
+  % ----------------------------------------------
+  \maketitle
+  % Obsah
+  % ----------------------------------------------
+  \setcounter{tocdepth}{1}
+  \tableofcontents
+  
+  % Seznam obrazku a tabulek (pokud prace obsahuje velke mnozstvi obrazku, tak se to hodi)
+  %\listoffigures
+  %\listoftables 
+
+  % Text prace
+  % ----------------------------------------------
+  \input{chapter1}
+  \input{chapter2}
+  \input{chapter3}
+  \input{chapter4}
+  \input{chapter5}
+  \input{chapter6}
+  \input{chapter7}
+  
+  \begin{flushleft}
+  \printbibliography
+  \end{flushleft}
+  \appendix
+  
+  \input{src_attachments} % viz. prilohy.tex
+\end{document}

@@ -1,0 +1,198 @@
+%=========================================================================
+% 
+\chapter{Web Real Time Communications}
+\label{chap:chapter2}
+This chapter focuses on the Web Real Time Communications (WebRTC) technology which is the main pillar of the resultant system. WebRTC is a group of open standards which are being developed by World Wide Web Consorcium (W3C) and Internet Engineering Task Force (IETF). W3C is concentrating on JavaScript Application Programming Interface (API) which serves as a bridge between web application and Real Time Communications (RTC) function (see \ref{sec:rtc-function}). IETF is developing protocols used by RTC functions to communicate with each other. All the specifications are still actively developed in the time of writing this thesis but pre--standard implementation is already available as open--source project under the WebRTC name.
+
+This technology allows to acquire local media data stream through simple API, connect to another endpoint in the internet and stream the multimedia data to it.
+
+Knowledge base for most of the information is called "The WebRTC book" in it's third edition \cite{TheWebRTCBook}.
+
+
+
+
+\section{Components}
+The WebRTC technology is composed of a couple of components. This thesis focuses on web applications which are the main category where this technology should be used. Figure \ref{fig:figWebRTCArchitecture} shows how the WebRTC is placed in the web browser and WebRTC architecture itself. The important parts are Web API, which is the one we use in applications, RTC function, which handles peer--to--peer connection, and media engines for capturing user media.
+
+\insertImg[0.79]{WebRTC-architecture.pdf}{WebRTC architecture and it's components.}{fig:figWebRTCArchitecture}
+
+
+
+\subsection{Real Time Communications function}
+\label{sec:rtc-function}
+The most important part of WebRTC is RTC function module. This module is responsible for communication between other RTC functions using on--the--wire protocols\footnote{Such as Transmission Control Protocol (TCP) or User Datagram Protocol (UDP).} and for communication with operating system. Each RTC function is considered to be an endpoint in the World Wide Web (WWW) and in this thesis it will be also referred to as peer.
+
+
+\subsubsection{Topologies}
+%\subsection{Topologies}
+The connection between peers can be established basically as two different topologies Triangle and Trapezoid. Triangle means that two peers are using the same web application on the same server\footnote{Triangle topology is what we will use in the resultant system.} while Trapezoid on the other hand is when each peer is using different web application (Figure~\ref{fig:figWebRTCTopology}) on a different server.
+
+\insertImg[0.9]{WebRTC-topology.pdf}{WebRTC peer connection topology topology.}{fig:figWebRTCTopology}
+
+
+\subsection{Signalling servers}
+Signalling is not a part of WebRTC effort for standardization but it is intensively used for establishing peer--to--peer connection between two peers. It is described in section \ref{sec:webrtc-signalling}.
+
+WebRTC uses technology to overcome common problems when communicating in WWW on top of signalling process. Usually most of the peers are hidden behind Network Address Translators (NAT)\footnote{Networking devices for translating local IP addresses to the one used as an endpoint to another network. For more information see \cite{rfc3022}}. In this case direct communication between peers behind different NATs is not possible.
+
+\insertImg[1.0]{WebRTC-ice-real-world.pdf}{Direct peer--to--peer communication is not possible in real world.}{fig:iceRealWorld}
+
+Interactive Connectivity Establishment (ICE) helps to deal with NATs and WebRTC and provides the ability to set up signalling so it can use ICE for NAT traversal. ICE uses Session Traversal Utilities for NAT (STUN) to gather all candidate addresses from both peers and systematically tries all possible pairs \cite{rfc5245} to establish peer--to--peer connection. Traversal Using Relays around NAT (TURN) servers have to be used if at least one peer is behind symmetric NAT. There are public STUN and TURN servers available and we can always deploy our own servers\footnote{Example of open--source STUN and TURN server implementation:\\ \url{https://code.google.com/p/rfc5766-turn-server/}}.
+
+\insertImg[1.0]{WebRTC-ice-stun-turn.pdf}{Direct peer--to--peer communication using STUN and TURN servers.}{fig:iceStunTurn}
+
+
+
+
+
+
+
+
+\section{Local media streams and tracks}
+WebRTC includes the standardization of how the media is being modelled. This section describes Tracks and Streams as the main entities.
+
+\insertImg[0.8]{WebRTC-track-stream.pdf}{WebRTC tracks combined to a media stream.}{fig:figWebRTCTrackStream}
+
+
+\subsection{Media tracks}
+Media of single type returned from single device is called source. This source can be simple as mono audio or complex as multi--channel surround audio but still a single track. In WebRTC this track is represented as object called \textit{MediaStreamTrack}. It is intended for it to be transferred as a single unit over Peer Connection using Real--time Transport Protocol (RTP) payload. The object encapsulates the source so that the developer cannot manipulate the source directly but rather use the object.
+
+The track contains \verb|muted| and \verb|enabled| boolean attributes which may be manipulated by a user or programmatically. It should allow a user to mute track to temporarily show black video or silent audio. Unlike muted, the disabled tracks are not transmitting any data at all.
+
+There is also \verb|readyState| attribute which is set by WebRTC implementation internally.  It is treated as follows:
+
+\begin{itemize}
+	\item \textbf{new} -- Created track which is not connected to media yet.
+	\item \textbf{live} -- Track which is ready to be streamed.
+	\item \textbf{ended} -- Source is not providing data any more and it is not possible that it will provide any data in the future again.
+\end{itemize}
+
+These attributes are independent, so the track may be \textit{live}, \textit{enabled} and \textit{muted}.
+
+
+\subsection{Media Streams}
+Media tracks can be bundled together in \textit{MediaStream} object. This object can be obtained by requesting local media, by duplicating the existing \textit{MediaStream} or by receiving streams from Peer connections. It contains a collection of tracks which can be manipulated with \verb|addTrack()| and \verb|removeTrack()| methods.
+
+Mixing tracks from multiple sources is allowed and thus one stream can contain media tracks e.g. from two microphones and a video camera. In current implementation all the tracks are synchronized but it is being discussed in WebRTC draft \cite{webrtc-media-draft} to allow disabling of the synchronization to avoid delays.
+
+The \textit{MediaStream} has attribute \verb|active| which is set to true if at least one its track is not ended. Otherwise it is false and indicates that it will no longer provide any data.
+
+
+
+
+
+
+
+
+\section{Using Web Real Time Communications}
+When using WebRTC four main actions have to be taken in order to successfully create WebRTC session (Figure \ref{fig:figWebRTCUsage}):
+
+\begin{enumerate}
+	\item Get local media.
+    \item Establish P2P connection.
+    \item Add media and data channels to connection.
+    \item Exchange session description with other peer.
+\end{enumerate}
+
+\insertImg[0.5]{WebRTC-usage.pdf}{Setting up and exchanging session description.}{fig:figWebRTCUsage}
+
+\subsection{Getting local media}
+WebRTC API provides \verb|getUserMedia()| function which was created to simplify the process of acquiring single local media stream as \textit{MediaStream} object which can be combined together with \textit{MediaStream} API.
+
+The \verb|getUserMedia()| function takes a JSON object as a parameter which represents settings and constraints for the required media. There are \verb|audio| and \verb|video| properties representing each media type which can be set to Boolean value or an object. Boolean indicates whether the media type is required or not, while object represents a set of \verb|mandatory| and \verb|optional| constraints. Currently supported video constraints are \verb|width|, \verb|height|, \verb|framteRate|, \verb|aspectRation| and \verb|facingMode|. Audio constraints are \verb|volume|, \verb|sampleRate|, \verb|sampleSize| and \verb|echoCancelation|.The \verb|successCallback| is invoked when all constraints are fulfilled and \verb|errorCallback| if they are not.\\
+
+\textbf{Example video object with constraints:}
+\begin{verbatim}
+     {
+        mandatory: {
+          width: { max: 640 }
+        },
+        optional: {
+            facingMode: 'user',
+            width: { min: 320 }
+        }
+     }
+\end{verbatim}
+
+For security reasons the applications should indicate that the local media is being accessed by asking the user for permission.
+
+
+\subsection{Peer connection}
+Direct connection between two endpoints (peer) in World Wide Web is handled with RTCPeerConnection API. This allows peers to be connected without the need of any server once the connection is established. When joining a conference\footnote{Conference is connection between more than two peers.} the Peer Connection has to be created between every two peers.
+
+\insertImg[0.99]{WebRTC-p2p.pdf}{Peer--to--peer connection and media transfer.}{fig:webRTC-p2p}
+
+\subsection{Exchanging media}
+Peer connection allows multiple media streams to be attached. Renegotiation of how the media are going to be represented is needed whenever the media changes. The representation is managed by RTCSessionDescription API which currently supports only Session Description Protocol (SDP) for session description format\footnote{WebRTC in its version 1.1 may include object session representation which is actively developed as ObjectRTC (ORTC).}. This description may also be adjusted manually but it is expected not to be touched in most cases.
+
+Successful media session exchange triggers the ICE hole punching process for NAT traversal using STUN servers followed immediately with key negotiation for securing the media session transport. JavaScript API also provides the possibility to add TURN servers to rely on media when symmetric NATs are used.
+
+\subsection{Closing connection}
+Closing session may be done manually or caused by connectivity loss. When the connection is interrupted, the ICE will try to restore it automatically. The hole punching will be initiated again and if that also fails, the session and all its permissions to access the media are invalidated\footnote{New permissions have to be obtained in case that new session will be stated.}.
+
+Each peer should close RTCPeerConnection with its \verb|close()| function when it is no longer needed. This will stop the connection correctly and no attempts to restart session will be performed.
+
+
+
+
+
+
+
+
+
+\section{Signalling process is important}
+\label{sec:webrtc-signalling}
+Signalling process is essential for establishing peer-to--peer connection. It has an important role in WebRTC but in contrast to other parts of WebRTC, it does not need to be standardized. WebRTC can work with multiple signalling protocols so the developer can choose the right one for his purposes. You can see component communication together with signalling servers in figure~\ref{fig:figWebRTCComponents}.
+
+\insertImg[0.47]{WebRTC-components.pdf}{WebRTC components and communication.}{fig:figWebRTCComponents}
+
+\noindent
+These four things summarize the purpose of signalling in WebRTC:
+
+\begin{enumerate}
+  \item Media capabilities and settings negotiation.
+  \item Participants identification and authentication.
+  \item Controlling the media session.
+  \item Resolution in conflicting session change from both sides at the same time.
+\end{enumerate}
+
+The lack of standardization is because it does not have to be standardized at all. The important thing is that a server has to ensure that both peers are using the same signalling which can be easily achieved by serving the same JavaScript code which encapsulates the type of signalling. In comparison with for example Voice over Internet Protocol (VoIP), where there is no possibility for changing the signalling protocol\footnote{Both nodes have to use the same protocol for example SIP or Jingle.}, this is definitely a big advantage.
+
+\subsection{Media capabilities negotiation}
+The essential function is the negotiation between peers about session description. For these purposes the Session Description Protocol (SDP) is used. The object API should be supported to replace the SDP in WebRTC 1.1 because SDP is hard to parse in JavaScript language. The SDP contains information for Real--time Transport Protocol (RTP) about included media, codecs and its parameters and bandwidth.
+
+Another role of signalling is to exchange information about candidate addresses used for Interactive Connectivity Establishment (ICE) hole punching which make NAT traversal technique possible. This information may be sent together with SDP or outside its scope.
+
+\subsection{Signalling transport}
+Signalling in WebRTC relies on bi--directional signalling channel between two peers. This can be achieved by HTTP, WebSockets or the data channels.
+
+When using HTTP transport, the signalling information messages can be transferred using HTTP GET and POST methods or in their responses. Peers can send information to server easily but in order to be able to send information from server we need to use things like AJAX\footnote{Asynchronous JavaScript and XML} or pooling the GET request which leaves transport connection open.
+
+By establishing WebSockets connection from peer to server a bi-directional channel is created. Exchanging signalling information is easy from both sides. The WebSockets channel can not be created between two peers directly because of NATs in the way. Although this would seem as a perfect solution, some firewalls and web proxies block WebSockets connections.
+
+Signalling using data channels is a special case. Data channels are fast, reliable connection with low latency between peers. However, in order to establish the data channel, you need to have a separate signalling process. Data channels are not meant to be used for a complete signalling process but rather for signalling audio and video media changes once the connection is established. 
+
+
+
+
+
+
+
+
+\section{Support and future}
+Unfortunately, WebRTC is still not fully working in all major browsers today. There are disagreements about the used codecs, so the full standard specifications have not been released yet. It seems that WebRTC is not ready for mass production yet but e.g. Google Hangouts or Facebook Chat now supports WebRTC based video calls in compliant browsers.
+
+\subsection{Browsers support}
+Chrome, Firefox, Opera and Bowser already natively support WebRTC pre--standard while Internet Explorer and Safari need external plug--in to work with it.
+
+Microsoft is actively collaborating on Object Real Time Communication (ORTC) API for WebRTC standard which should be a part of WebRTC 1.1 and it should overcome the painful SDP format which is not convenient to work with in JavaScript. They are working on the implementation \cite{ortc} but we will have to wait if this is going to be included in Internet Explorer or the new Edge browser\footnote{Miscrosoft Edge web browser: http://www.browserfordoing.com/en-us/}.
+
+ The intentions of Apple about WebRTC support in their products are as always kept in secret.
+
+\insertImg[0.7]{browser-support.pdf}{WebRTC browser support -- May 2015.}{fig:browserSupport}
+
+\subsection{Business and mass production}
+Enterprise video conferencing companies are not so enthusiastic about WebRTC and they are waiting for WebRTC to overcome its flaws\footnote{WebRTC compromises VPN tunnels by leaking user's real IP address \cite{webrtc-ip-leak}}.  They need quality assurance for paid services and also high security policies which are not completely satisfactory.
+
+%\subsection{Final notes}
+WebRTC is still a draft in its early developmental state but the working progress is fast and it seems to have bright future. Users will benefit from its easy usage and companies from reducing their operational costs. The 2015 could be the year of WebRTC to become a huge player in the field of multimedia streaming technologies.

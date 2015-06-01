@@ -1,0 +1,186 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Android operating system}
+\label{chap:chapter3}
+This chapter introduces the Android platform and its components which are important for understanding the implementation specifics of the resultant mobile application. Then it describes how to access and work with camera on Android device using the WebRTC technology described in the chapter \ref{chap:chapter2}.
+
+Existing applications related to Android and video streaming are at the end of this chapter.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Android platform}
+Android is a well known operating system based on Linux kernel. It was created mainly for mobile devices but it has spread into other types of devices such as tablets, TVs, watches, other wearable technology and it can also be found in modern cars. There is not any other operating system on the market which is used in so many various situations.
+
+The beginning of this section contains a brief history of Android operating system, its architecture and components. Development tools as Android Studio\footnote{new Integrated Development Environment (IDE) for Android development} and also new build system called Gradle are described at the end of this section.
+
+\insertImg[0.7]{android-dashboards-cropped.pdf}{Android APIs. See Android Dashboards for recent information \cite{android-dashboards}.}{fig:androidapis}
+
+
+\subsection{History}
+History of Android starts in the year 2003 when Android, Inc. was founded by Andy Rubin, Rich Miner, Nick Sears and Chris White. At first they wanted to create a simple and powerful operating system for digital cameras but as soon as they realized that the market is not big enough,, they decided to focus more on mobile operating systems. In 2005 they ran out of money and they were taken over by Google, Inc.. There was not much known about the Google's Intentions with Android at that time.
+
+At the end of 2007 the Open Headset Alliance revealed their plan to develop open standards for mobile devices including Android as their first product. First commercially distributed device running Android was HTC Dream which was released almost one year later.
+
+Android has gone through numerous changes which were divided into different API levels. The figure \ref{fig:androidapis} shows the amount of distribution for major APIs. We will be focusing the implementation on Android 5.0 and above (Lollipop), which natively supports all technologies we need.
+
+
+\subsection{Architecture}
+Android uses a stack of software components divided into four layers -- see figure \ref{fig:androidarchitecture}.
+
+\insertImg[0.72]{android-architecture.pdf}{Android OS architecture layers.}{fig:androidarchitecture}
+
+
+\subsubsection{Kernel}
+Android OS is based on Long Term Support releases of Linux kernel. The most recent Android (Lollipop) has Linux kernel in version 3.10 but the version also depends on hardware and the device itself.
+
+It contains hardware drivers, power management capabilities and other low level services. Linux and Android aim to include Android hardware drivers and specific features into Linux kernel, so they could both use the same kernel without a lot of modifications.
+
+\subsubsection{Middleware}
+On top of Linux kernel there is a middleware layer which contains libraries together with Android Runtime both written in C language. Libraries provide capabilities for SQLite, OpenGL, libc and many other low level functions. Android Runtime contains core libraries and special virtual machine for running Android applications. From the first versions of Android the only virtual machine (VM) available was Dalvik VM. It runs a modified Java byte code which focuses on memory efficiency and it uses Just In Time compilation (JIT)\footnote{Applications are translated into native code every time they are launched.}. Together with Android 4.4 the new runtime called ART was introduced as an experimental feature and it is natively supported in Android 5.0. It brings Ahead Of Time compilation (AOT)\footnote{Applications are translated into native code in time of installation. This increases the performance over memory efficiency} and a better garbage collection.
+
+\subsubsection{Application framework}
+The Application framework layer provides high level software components that can be used directly by applications. They are exposed as Java classes with well documented API, so it is easy to include them into applications. It provides capabilities such as Window, Activity and Resource managers and many other services forming the Android operating system capabilities.
+
+\subsubsection{Applications}
+The application layer is the one where all applications are installed. It can directly use components from Application framework or use Java Native Interface and implement functions in native C/C++ code.
+
+
+
+\subsection{Components}
+The Application framework provides a set of reusable components which let you create very rich applications. This section is just an overview of these components without a lot of implementation and design details. For further information about each component see Google developer guides \cite{api-guide}.
+
+\subsubsection{Android Manifest}
+\label{android:manifest}
+Android Manifest is not truly a component but it has to be included in every application. It is structured XML\footnote{XML stands for Extensible Markup Language.} file, which contains information about the application itself. Android uses this file to determine application's package, components, required permissions, system version restrictions, list of linked libraries and many other things.
+
+\subsubsection{Intents and Intent filters}
+The Intent is a messaging object used for asynchronous communication between application components. The messages can be sent between components from the same applications as well as components between different applications.
+
+The Intent can contain additional data inside Bundle object which may be used by the receiver of Intent. \\
+
+\newpage
+\noindent
+Three main things that the Intent is used for:
+\vspace{-0.5em}
+\begin{itemize}
+	\item \textbf{To start an Activity:} Basic mechanism to start a single Activity. Intent contains information about which activity should be started and how.
+	
+	\item \textbf{To start a Service:} Services can be started very much alike the Activities but they run without the access to a user interface thread.
+	
+	\item \textbf{For delivering a broadcast:} A broadcast message can be received by many applications at the same time. The system events such as charge state change or connectivity change are broadcasted and they are available to all broadcast receivers.
+\end{itemize}
+
+\subsubsection{Activities}
+An activity represents a single screen of application tied to a user interface so that a user can interact with another user through graphical elements and touch gestures. Activity's life--cycle is very important because it illustrates how the Activity interacts with the system as shown in figure \ref{fig:activity-lifecycle}.
+
+\insertImg[0.8]{android-activity-lifecycle.pdf}{Activity's simplified lifecycle.}{fig:activity-lifecycle}
+
+The system creates Window before entering in \verb|onCreate()| method so we can place Activity's User Interface (UI) with \verb|setContentView(int viewID)| method. Our implementation uses the life--cycle to acquire (inside \verb|onStart()|) and release (inside \verb|onStop()|) WakeLock object which is used to prevent device from sleeping while capturing the media. You can read more about Activities in a developer guide \cite{activity-lifecycle}.
+
+
+\subsubsection{Fragments}
+Fragments were introduced in Android 3.0 as a concept of reusable small groups of graphical elements tied together and enhanced with additional logic. Multiple fragments can be placed into one Activity to build a multi--pane layouts or they can be used in Dialogs. Fragments can also be nested in Android 4.2 and above. Alike Activities, Fragments also have their own life--cycle.
+
+%\insertImg[0.3]{fragment-lifecycle.png}{Fragment's lifecycle. Taken from \cite{fragment-lifecycle}.}{fig:fragment-lifecycle}
+
+
+\subsubsection{Services}
+A service component is not tied to the user interface. This component was designed for long lasting operations which should be performed in background in order not to slow down the application. It can be run in the main application process or in a separate one. Activity can bind the service to be able to communicate with it or it can just send Intents to it.
+
+Service can be started in two modes. It can be bounded or unbounded. Unbounded services are explicitly started and stopped, while bounded services are automatically created when Activity binds to it and they are destroyed when all activities unbound. 
+
+We use a special case of unbound service which is called IntentService. It allows us to perform short tasks in background,  which is ideal for handling push notifications (more in chapter \ref{chap:chapter4}) from server and react to them. IntentService's simplified life--cycle is shown in figure \ref{fig:service-lifecycle}.
+
+\insertImg[0.2]{android-service-lifecycle.pdf}{IntentService's simplified life--cycle.}{fig:service-lifecycle}
+
+For further information about Services see developer guide \cite{service-lifecycle}.
+
+
+\subsubsection{Content Providers}
+Content providers add the possibility to share structured data among applications. There are many content providers built into the system which expose contacts, media, SMS and other useful information. Developers can use this information in their own applications or  provide their own content.
+
+\subsubsection{App Widgets}
+App Widget is a small part of the application that can be easily embedded into other applications. These components have specific user interface and they are periodically updated. The Widgets are extensively used in launcher applications to serve important information directly to a user without the need of launching the application itself.
+
+\subsubsection{Processes and Threads}
+When application is started, the system creates new Linux process with a single thread -- \textquote{main} thread. Starting another application's component does not create another process or thread unless specified otherwise. The main thread is designed to serve short lasting operations that manipulate UI, but it is not suitable for long lasting operations such as socket communication or media playback because it causes UI to lag, which breaks down the user experience (UX). Any non instant operations should be moved into a separate thread or a separate process which does not block the main thread of the application.
+
+\subsection{Development tools}
+Android development process has recently gone through a lot of changes. New official Integrated Development Environment (IDE) was introduced together with a new Android build system which brought new possibilities for building application variants.
+
+\insertImg[0.5]{studio-gradle.pdf}{Android studio and Gradle logos.}{fig:studio-gradle}
+
+\subsubsection{Android Studio}
+The Google developer team announced Android Studio on Google I/O conference in May 2013. First IDE completely dedicated to Android development. It is built on top of IntelliJ IDEA community edition from JetBrains and together with a new Android build system it is much more oriented to project scalability and maintenance than the previous combination of Eclipse IDE with Android Developer's Tools. At the end of 2014, Google released stable Android Studio in version 1.0 together with Lollipop Software Development Kit (SDK).
+
+\subsubsection{Android build system}
+Android build system brings complex project configuration which allows to build, test, package and run applications. It is based on Gradle but specifics for Android are implemented with Android Gradle plugin.
+
+Gradle is powered by Groovy Domain Specific Language and as a language for automation it really makes the build process self independent and automatic. It combines the power and flexibility of Ant together with dependency management and plug--ins from Maven and much more.
+
+Android Gradle plug--in adds Android Manifest merging capabilities, build types and flavours, code obfuscation, signing configurations and support for other specifics of Android platform.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Android's WebView}
+WebView is Android View for loading Hyper Text Markup Language content. It was tied together with operating system and could not be updated until Android Lollipop. Then it was made available through Google Play as an application called Android System WebView.
+
+\subsection{WebRTC in WebView}
+WebRTC is available in WebView since version 36.0.0 which was shipped with Android Lollipop. We cannot use WebRTC technology in native applications with devices running older Android versions because the older WebView does not support it.
+
+\subsection{Using the WebView}
+WebView can be used like any regular Android View in XML layout or instantiated programmatically. You can then call \verb|loadData()| or \verb|loadUrl()| functions to display or download the content.
+
+If we want to use WebRTC in the WebView we have to enable JavaScript and set up WebChromeClient which handles permissions when the application asks for user media.\\
+
+\vspace{0.5em}
+\noindent\vspace{-0.3em}\noindent
+Enabling JavaScript:
+\begin{lstlisting}
+WebSettings webSettings = webViewInstance.getSettings();
+webSettings.setJavaScriptEnabled(true);
+\end{lstlisting}
+
+\vspace{1em}
+\noindent\vspace{-0.3em}\noindent
+Setting the WebChromeClient for permission handling:
+\begin{lstlisting}
+webViewInstance.setWebChromeClient(new WebChromeClient() {
+  @Override
+  public void onPermissionRequest(final PermissionRequest r) {
+    // r.grant(request.getResources()); allow the request
+    // r.deny(); deny the request
+  }
+});
+\end{lstlisting}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Existing applications}
+There are good applications on Google Play store which have the ability to work with a camera and stream its content. The problem with existing solutions is that they are based on older technologies like pure Real Time Streaming Protocol (RTSP) which does not solve the problem of NAT and firewall restrictions. There is no problem with using such applications in close self managed environment but they can hardly be used in real world usage multimedia server infrastructure.
+
+This section shows two applications which were used as inspiration for design, usability and used technologies at the beginning of the theoretical preparation for the thesis. 
+
+\subsection{Spydroid--ipcamera}
+Spydroid--ipcamera is a very simple application for audio and video streaming. It is built on top of libstreaming \footnote{Simon Guigui and contributors -- \url{https://github.com/fyhertz/libstreaming/}.} library. It has its own RTSP server implementation for simple streaming to RTSP clients. It also includes the possibility to start  HTTP server, which can provide more settings for the stream.
+
+This application is open sourced but not maintained at the time of writing. It lacks the support for delivering the content into a cloud or the possibility to view the stream on a web page.
+
+\subsection{IP Webcam}
+IP Webcam has the same functions as Spydroid--ipcamera and adds much more complex settings and better HTTP server implementation. It also lacks the ability to view the stream on a web page.
+
+There are no implementation details available -- this is a proprietary software actively developed.\\
+
+
+\insertImg[1.0]{current-app-ui.pdf}{Screenshots with UI of current applications.}{currentApp}
+
+The user interface in both applications is very simple. It shows only details for connection and video preview as shown in figure \ref{currentApp}.
+

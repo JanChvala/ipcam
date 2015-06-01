@@ -1,0 +1,173 @@
+%=========================================================================
+% 
+\chapter{Testing and flaws}
+\label{chap:chapter6}
+This chapter focuses on the testing of the resultant application in real conditions. In the first part of this section there are measurements of delays and connectivity establishment. The second part points out some of the problems, which occurred during the development process.
+
+
+\section{Measuring streaming delays and stability testing}
+Important aspects of real--time streaming are delays. Everything takes time. Loading the page inside the browser, starting the device with GCM, acquiring local media, Peer Connection establishment and media transfer. These delays make the difference between a usable and unusable solution.
+
+The resultant system was created to work in most cases even when the device is hidden behind NAT and to stream data only when it is needed. All the technologies that make this possible are against the speed of the process from the point where the stream is requested to the point where it is actually shown to the user.
+
+
+\subsection{Delays}
+ The streaming application is expected to be running on local wi--fi network and to be placed stationary. In this way the streaming was tested. The requests on the other hand may be done from different networks with different capabilities. Because of that the testing requests were made from three different networks: Wi-fi, 3G and mocked 2G network\footnote{The 2G network was mocked by disabling 3G connectivity on mobile device.}. For each connectivity except 2G newrok\footnote{Testing of requests from 2G networks was very unstable. The connection could be established for the lowest possible streaming quality only for three times out of thirty and they were not stable. All of them broke after a couple of seconds of streaming. Therefore using the resultant application on 2G networks is not recommended.} there was one hundred established streams. Arithmetic mean was taken as the result for each measured value.\\
+
+\noindent
+All the streaming was done for the best video settings:\vspace{-0.5em}
+\begin{itemize}
+	\item \textbf{resolution} - $ 1980\times1020 $px
+	\item \textbf{frame rate} - 30 frames per second
+	\item \textbf{bandwidth} - 8000kb/s
+\end{itemize}
+
+\newpage
+\noindent
+Measured delays are:\vspace{-0.5em}
+\begin{itemize}
+	\item \textbf{stream available} - From request to media element availability. Shown in table \ref{table:stream}.
+	\item \textbf{initial video delay} - The delay between the time when stream is available and the time it is shown. Shown in table \ref{table:delay}.
+	\item  \textbf{total time} - from starting the streaming page to showing the video. Shown in table \ref{table:total}.
+\end{itemize}
+
+\noindent
+The testing was made in two modes:\vspace{-0.5em}
+\begin{itemize}
+	\item \textbf{already running} - The stream is running and the session was established. There is no need to send GCM requests.
+	\item \textbf{not running} - The stream has to be started with GCM messages.
+\end{itemize}
+
+\begin{table}[H]
+\caption{Tables showing average \textbf{stream available} for different networks. Top table for already running streaming and bottom for GCM started streaming.}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline 
+& min (ms) & max (ms) & arithmetic mean (ms) \\
+\hline 
+wi--fi & 1813 & 4354 & 2181 \\
+\hline 
+3G & 1901 & 4523 & 2390 \\
+\hline 
+2G & - & - & - \\
+\hline
+\end{tabular} 
+
+\label{table:stream}
+\vspace{1em}
+\begin{tabular}{|l|l|l|l|}
+\hline 
+& min (ms) & max (ms) & arithmetic mean (ms) \\
+\hline 
+wi--fi & 6036 & 9129 & 6639 \\
+\hline 
+3G & 6656 & 9860 & 7183 \\
+\hline 
+2G & - & - & - \\
+\hline
+\end{tabular} 
+\end{center}
+\end{table}
+
+\vspace{-2em}
+\begin{table}[H]
+\caption{Table showing average \textbf{initial video delay} for different networks. Top table for already running streaming and bottom for GCM started streaming.}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline 
+& min (ms) & max (ms) & arithmetic mean (ms) \\
+\hline 
+wi--fi & 510 & 7702 & 1538 \\
+\hline 
+3G & 922 & 3113 & 1948 \\
+\hline 
+2G & - & - & - \\
+\hline
+\end{tabular} 
+
+\label{table:delay}
+\vspace{1em}
+\begin{tabular}{|l|l|l|l|}
+\hline 
+& min (ms) & max (ms) & arithmetic mean (ms) \\
+\hline 
+wi--fi & 464 & 1771 & 1214 \\
+\hline 
+3G & 1051 & 2196 & 1715 \\
+\hline 
+2G & - & - & - \\
+\hline
+\end{tabular} 
+\end{center}
+\end{table}
+
+\vspace{-2em}
+\begin{table}[H]
+\caption{Table showing average \textbf{total time} for different networks. Top table for already running streaming and bottom for GCM started streaming.}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline 
+& min (ms) & max (ms) & arithmetic mean (ms) \\
+\hline 
+wi--fi & 2344 & 10823 & 4321 \\
+\hline 
+3G & 3083 & 6745 & 4838 \\
+\hline 
+2G & - & - & - \\
+\hline
+\end{tabular} 
+
+\label{table:total}
+\vspace{1em}
+\begin{tabular}{|l|l|l|l|}
+\hline 
+& min (ms) & max (ms) & arithmetic mean (ms) \\
+\hline 
+wi--fi & 6808 & 10180 & 7854 \\
+\hline 
+3G & 7784 & 11260 & 8898 \\
+\hline 
+2G & - & - & - \\
+\hline
+\end{tabular} 
+\end{center}
+\end{table}
+
+Both wi--fi and 3G are quite similar in the results. The stream object that is being placed into HTML DOM was accessible after two seconds when playing active stream and approximately seven seconds when it had to be started with GCM (see table \ref{table:stream}). It is due to the three second delay when checking for session presence. But it is still very good time which we can count with while requesting the stream.
+
+Video delay, which indicates the actual time that the video is behind the reality, is more different. As you can see from table \ref{table:delay} the difference in wi-fi and 3G is four to five hundred milliseconds. This initial video delay was after a couple of seconds decreased to approximately half of a second. Using an IP camera for testing purposes with video delay under one second is usable.
+
+The 3G network is slower in comparison with wi-fi. The difference in the total time ranges from two hundred milliseconds to one second, which is an acceptable difference. There is no problem when viewing the stream from 3G networks because if the network is not capable of streaming the video in requested quality, it simply decreases the quality, so the stream does not break. The decreasing quality on 3G networks was noticeable but the streaming quality was good enough to recognize objects and people. On the other hand small text and tiny details disappeared in a low resolution. 
+
+
+\subsection{Stability}
+The stability of the streaming was good in both networks and the connection did not break after sixty minutes of continuous streaming from one wi-fi network to the other.
+
+The tests also included connection failures. The first testing was done by disabling the connectivity on playback device. This completely broke the streaming session and Peer Connection, which could not be restored automatically but it does not happen very often that the networking interface is completely disabled.
+
+Blocking the connectivity by removing networking cable for very short time made the stream to stop but is was quickly restored after the connection was recovered. This indicates that the technology is capable of overcoming short time connectivity problems but it fails in case of a serious one. To overcome them, it would be possible to implement connectivity check mechanism which would initiate session restoration after detecting that the session was disconnected.
+
+
+\section{Android and its WebRTC flaws}
+WebRTC technology is still not fully supported anywhere. But I found some points where Android's WebView is few steps behind the latest build of web browser. Some of the points may be relevant to RTCMultiConnection library rather than to WebRTC technology itself. All the mentioned issues were tested on WebView version 39.0.0 included in Android 5.1.1 (Lollipop).
+
+\subsection{RTCMultiConnection ignores media constraints}
+RTCMultiConnection library in version 2.2.2, which is used for working with WebRTC APIs, is forcing the media constraint to be reset for mobile devices. This constraint will probably be removed in future versions.
+
+Mobile device is detected from \textit{user agent} in request.  To workaround this without changing the library we change the value of the \textit{user agent} when using WebView component but it is hard to change \textit{user agent} when using web browsers for streaming.
+
+\subsection{Facing mode}
+One of the advantages of WebRTC should be the possibility for developers to choose which camera they want to use the video from. This function is so called facing mode and it can be set--up during request for local media by the standard media constraints.
+
+Setting this property in Android leads to a faulty stream. The local media cannot be acquired at all when the facing mode is set as a mandatory constraint. The local media is acquired successfully when setting the facing mode as optional constraint but it seems to have no effect in the used camera.
+
+The facing mode is not working neither in native WebView version 39.0.0  nor Chrome for Android version 42.02311 nor the Firefox for Android in version 38.0.1. Firefox is trying to solve this problem by asking the user to choose the source camera for local media but it requires additional interaction with the user.
+
+\subsection{Media element \textit{autoplay} attribute}
+HTML video tag has elements which control the initial behaviour of the video playback. Attribute \verb!autoplay! is used to automatically start the playback  when the media element is inserted into the HTML DOM. This is working as expected in web browsers but Android's policy is that the user should be aware of any network data consumption so the attribute \verb!autoplay! is ignored on the first launch and activated after user's interaction with video controls. This causes the video stream to be immediately paused (muted) after any peer demands the data. This is not particularly useful in the case when the user has no ability to interact with the device because of remote streaming.
+
+It happens for every new peer or local media renegotiation when using RTCMultiConnection. Not only that it breaks the streaming but invalid stream events are triggered to indicate that new stream is available. 
+
+This can be solved with JavaScript's methods that can manipulate the video. There are \verb!play()! and \verb!pause()! methods which can be used to restart the playback when the right events occur. The resultant application hooks up the \verb!onstream! callback and every time the invalid stream is passed to this method we simply restart the existing stream which is the only relevant one.
+
+
