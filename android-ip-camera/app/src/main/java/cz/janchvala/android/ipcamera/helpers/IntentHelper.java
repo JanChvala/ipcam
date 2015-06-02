@@ -20,7 +20,7 @@ public class IntentHelper {
     /**
      * the path of streaming page on the server side
      */
-    private static final String STREAMING_PATH = "assets/broadcast.html";
+    private static final String STREAMING_PATH = "assets/ipcamera.html";
 
     /**
      * Method creates Intent for sharing the stream. The playback URL is build from preferences.
