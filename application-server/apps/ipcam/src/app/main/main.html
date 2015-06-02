@@ -1,118 +1,116 @@
-<jch-app-loader>
-  <div layout="column" flex>
-    <md-toolbar class="md-default-theme md-tall">
-      <div class="md-toolbar-tools">
-        <ng-md-icon class="project-icon" icon="camera" size="46" ></ng-md-icon>
-        <h1>Android IP camera</h1>
-      </div>
-    </md-toolbar>
+<div layout="column" flex>
+  <md-toolbar class="md-default-theme md-tall">
+    <div class="md-toolbar-tools">
+      <ng-md-icon class="project-icon" icon="videocam" size="46" style="fill: white; margin-right: 16px"></ng-md-icon>
+      <h1>Android IP camera</h1>
+    </div>
+  </md-toolbar>
 
-    <a href="https://github.com/JanChvala/thesis-ipcam" style="z-index: 1000">
-      <img style="position: absolute; top: 0; right: 0; border: 0;"
-           src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
-           alt="Fork me on GitHub"
-           data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
-    </a>
+  <a href="https://github.com/JanChvala/thesis-ipcam" style="z-index: 1000">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
+  </a>
 
 
-    <md-content style="z-index: 3; max-width: 1280px; margin: -74px auto 64px auto">
-      <md-card style="background-color: white">
-        <md-card-content>
-          <h2 class="md-title" style="margin-top: 0">About - O projektu</h2>
-          <md-divider></md-divider>
+  <md-content style="z-index: 3; max-width: 1280px; margin: -74px auto 64px auto; background-color: transparent">
+    <md-card style="background-color: white">
+      <md-card-content>
+        <h2 class="md-title" style="margin-top: 0">About - O projektu</h2>
+        <md-divider></md-divider>
 
-          <div layout="row">
-            <div flex="66">
-              <h3>English</h3>
+        <div layout-md="column" layout-gt-md="row">
+          <div flex="66">
+            <h3>English</h3>
 
-              <p style="text-align: justify">
-                This page represents sample project which is used for demonstration the principles described in my
-                master thesis.
-                The goal was to create Android IP camera application with the ability to show the camera content from
-                the web page.
-                The application has to work in even if the Android device is behind Network Address Translator (NAT).
-              </p>
+            <p style="text-align: justify">
+              This page represents sample project which is used for demonstration the principles described in my
+              master thesis.
+              The goal was to create Android IP camera application with the ability to show the camera content from
+              the web page.
+              The application has to work in even if the Android device is behind Network Address Translator (NAT).
+            </p>
 
-              <p style="text-align: justify">
-                Web Real Time Communication (WebRTC), Google Cloud Messaging and AngularJS are the main implementation
-                pillars. You can read the whole master thesis to find out more.
-              </p>
+            <p style="text-align: justify">
+              Web Real Time Communication (WebRTC), Google Cloud Messaging and AngularJS are the main implementation
+              pillars. You can read the whole master thesis to find out more.
+            </p>
 
-              <p style="text-align: justify">
-                To start first download the APK, install it on Android device running Android 5.0+ and call
-                the Android IP camera using the Floating Action Button at the righ bottom corner of this screen.
-              </p>
+            <p style="text-align: justify">
+              To start first download the APK, install it on Android device running Android 5.0+ and call
+              the Android IP camera using the Floating Action Button at the righ bottom corner of this screen.
+            </p>
 
-              <h3>Česky</h3>
+            <h3>Česky</h3>
 
-              <p style="text-align: justify">
-                Tato stránka představuje jednoduchý projek, který slouží pro demonstraci principů popsaných v mojí
-                diplomové práci.
-                Cílem práce bylo vytvořit Android IP kamera, aplikaci která dokáže přenést multimediální data z
-                videokamery zařízení a přehrát je pomocí webové stránky.
-                Aplikace musí být schopná pracovat v reálných podmínkách a to i v případě, že je zařízení schované za
-                překladačem síťových adres (NAT).
-              </p>
+            <p style="text-align: justify">
+              Tato stránka představuje jednoduchý projek, který slouží pro demonstraci principů popsaných v mojí
+              diplomové práci.
+              Cílem práce bylo vytvořit Android IP kamera, aplikaci která dokáže přenést multimediální data z
+              videokamery zařízení a přehrát je pomocí webové stránky.
+              Aplikace musí být schopná pracovat v reálných podmínkách a to i v případě, že je zařízení schované za
+              překladačem síťových adres (NAT).
+            </p>
 
-              <p style="text-align: justify">
-                Web Real Time Communication (WebRTC), Google Cloud Messaging a AngularJS jsou hlavními implementačními
-                nástroji. Pro více informací můžete nahlédnout do celého znění diplomové práce.
-              </p>
+            <p style="text-align: justify">
+              Web Real Time Communication (WebRTC), Google Cloud Messaging a AngularJS jsou hlavními implementačními
+              nástroji. Pro více informací můžete nahlédnout do celého znění diplomové práce.
+            </p>
 
-              <p style="text-align: justify">
-                Abyste mohli zobrazit videokameru z telefonu, nejprve stáhněte a nainstalujte APK balíček do Android
-                zařízení běžící na Androidu ve verzi 5.0+. Potom můžete zahájit hovor pomocí FAB (Floating Action Button( tlačítka
-                nacházejícího se v pravo dola na této stránce
-              </p>
-            </div>
+            <p style="text-align: justify">
+              Abyste mohli zobrazit videokameru z telefonu, nejprve stáhněte a nainstalujte APK balíček do Android
+              zařízení běžící na Androidu ve verzi 5.0+. Potom můžete zahájit hovor pomocí FAB (Floating Action Button( tlačítka
+              nacházejícího se v pravo dola na této stránce
+            </p>
+          </div>
 
-            <div flex="33">
-              <div class="md-actions" layout="column" layout-align="space-around center" style="margin-top: 64px">
-                <div layout="column" layout-align="center center">
-                  <img
-                    src="http://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Android_robot.svg/511px-Android_robot.svg.png"
-                    width="85" height="100" style="margin-bottom: 16px; z-index: 0;">
-                  <a target="_self" href="/assets/cz.janchvala.android.ipcam.apk"
-                     download="cz.janchvala.android.ipcam.apk">
-                    <md-button class="md-primary">Download APK</md-button>
-                  </a>
-                  <a target="_self" href="/assets/cz.janchvala.android.ipcam.apk"
-                     download="cz.janchvala.android.ipcam.apk">
-                    <md-button class="md-primary">Stáhnout APK</md-button>
-                  </a>
-                </div>
-                <div layout="column" layout-align="center center" style="margin-top: 64px">
-                  <img
-                    src="http://www.cescg.org/CESCG-2011/images/fit_logo.jpg"
-                    width="100" height="100" style="margin-bottom: 16px; z-index: 0;">
-                  <a target="_self" href="/assets/jan_chvala-master_thesis.pdf" download="jan_chvala-master_thesis.pdf">
-                    <md-button class="md-primary">Download master thesis</md-button>
-                  </a>
-                  <a target="_self" href="/assets/jan_chvala-master_thesis.pdf" download="jan_chvala-master_thesis.pdf">
-                    <md-button class="md-primary">Stáhnout dimplomovou práci</md-button>
-                  </a>
-                </div>
+          <div flex="33">
+            <div class="md-actions"  layout-md="row" layout-gt-md="column" layout-align="space-around center" style="margin-bottom: 32px">
+              <div layout="column" layout-align="center center"  style="margin-top: 64px">
+                <img
+                  src="http://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Android_robot.svg/511px-Android_robot.svg.png"
+                  width="85" height="100" style="margin-bottom: 16px; z-index: 0;">
+                <a target="_self" href="/assets/cz.janchvala.android.ipcamera.apk"
+                   download="cz.janchvala.android.ipcamera.apk">
+                  <md-button class="md-primary">Download APK</md-button>
+                </a>
+                <a target="_self" href="/assets/cz.janchvala.android.ipcamera.apk"
+                   download="cz.janchvala.android.ipcamera.apk">
+                  <md-button class="md-primary">Stáhnout APK</md-button>
+                </a>
+              </div>
+              <div layout="column" layout-align="center center" style="margin-top: 64px">
+                <img
+                  src="http://www.cescg.org/CESCG-2011/images/fit_logo.jpg"
+                  width="100" height="100" style="margin-bottom: 16px; z-index: 0;">
+                <a target="_self" href="/assets/xchval01-master-thesis-WIS.pdf" download="jan_chvala-master_thesis.pdf">
+                  <md-button class="md-primary">Download master thesis</md-button>
+                </a>
+                <a target="_self" href="/assets/xchval01-master-thesis-WIS.pdf" download="jan_chvala-master_thesis.pdf">
+                  <md-button class="md-primary">Stáhnout dimplomovou práci</md-button>
+                </a>
               </div>
             </div>
           </div>
-        </md-card-content>
-      </md-card>
+        </div>
+      </md-card-content>
+    </md-card>
 
-    </md-content>
-    <md-button class="md-fab" aria-label="Play IP camera" style="position: fixed; bottom: 64px; right: 64px; background-color: green" ng-click="makeCall()">
-      <ng-md-icon icon="call" size="36" style="fill: white"></ng-md-icon>
-    </md-button>
+  </md-content>
+  <md-button class="md-fab" aria-label="Play IP camera" style="position: fixed; bottom: 64px; right: 64px; background-color: green" ng-click="makeCall()">
+    <ng-md-icon icon="videocam" size="36" style="fill: white"></ng-md-icon>
+  </md-button>
 
-  </div>
-</jch-app-loader>
+</div>
 
 <script type="text/ng-template" id="dialog.call.tmpl.html"><md-dialog aria-label="Mango (Fruit)">
 <form name="callerForm">
   <md-dialog-content class="sticky-container">
-    <md-subheader class="md-sticky-no-effect">Dialer</md-subheader>
+    <md-subheader class="md-sticky-no-effect">IP camera dialer</md-subheader>
     <div>
       <md-input-container flex style="margin: 0 16px; min-width: 300px;">
-        <label>Caller ID</label>
+        <label>Android IP camera ID</label>
         <input required ng-model="$root.callerID">
         <div ng-messages="callerForm.description.$error">
           <div ng-message="required">This is required.</div>

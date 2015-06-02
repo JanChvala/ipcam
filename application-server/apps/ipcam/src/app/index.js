@@ -2,7 +2,6 @@
 /*jshint esnext: true */
 
 import * as pages from './pages.module';
-import * as directives from './../components/jch-directives/jch-directives';
 
 function config($stateProvider, $urlRouterProvider, $mdThemingProvider) {
     $mdThemingProvider.theme('default')
@@ -77,7 +76,7 @@ function directiveResize($window) {
 directiveResize.$inject = ['$window'];
 
 
-angular.module('jch-app.ipcam', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'restangular', 'ui.router', 'ngMaterial', 'ngMdIcons', pages.name, directives.name])
+angular.module('jch-app.ipcam', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'restangular', 'ui.router', 'ngMaterial', 'ngMdIcons', pages.name])
     .config(config)
     .controller('AppCtrl', appController)
     .directive('resize', directiveResize);

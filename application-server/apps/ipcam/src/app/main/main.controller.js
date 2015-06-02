@@ -20,7 +20,7 @@ function DialogController($scope, $mdDialog) {
 
 
 class MainPageCtrl {
-  constructor($rootScope, $scope, $mdDialog, $location) { // jshint ignore:line
+  constructor($rootScope, $scope, $mdDialog, $window) { // jshint ignore:line
     $scope.makeCall = function (ev) {
       console.log('opening call dialog');
       $mdDialog.show({
@@ -30,20 +30,16 @@ class MainPageCtrl {
       })
         .then(function (answer) {
           console.log($scope);
-          var callerID = $rootScope.callerID
+          var callerID = $rootScope.callerID;
           $rootScope.callerID = '';
-          $location.path('/play/' + callerID);
+          $window.location.href = "/assets/ipcamera.html?room=" + callerID;
         }, function () {});
-    };
-    $scope.downloadApk = function () {
-      console.log('APK download requested');
-      $location.path('');
     };
   }
 
 
 }
-MainPageCtrl.$inject = ['$rootScope', '$scope', '$mdDialog', '$location'];
+MainPageCtrl.$inject = ['$rootScope', '$scope', '$mdDialog', '$window'];
 
 angular.module(moduleName)
   .controller('MainPageCtrl', MainPageCtrl)

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Android IP camera</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <style>
+        body {
+            background-color: #4CAF50;
+            height: 100%;
+            width: 100%;
+        }
+
+        video {
+            background-color: black;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        #end-button {
+            position: fixed;
+            bottom: 24px;
+            right: 32px;
+            visibility: hidden;
+        }
+    </style>
+
+    <!-- Compiled and minified CSS and JavaScript for Materialized framework -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+
+    <!-- scripts used for broadcasting -->
+    <!--If the CDN does not work use local cache -->
+    <script src="http://www.webrtc-experiment.com/firebase.js"></script>
+    <script src="http://www.webrtc-experiment.com/RTCMultiConnection.js"></script>
+    <!-- local cache of RTCMultiConnection JS files -->
+    <!--<script src="/assets/firebase.js"></script>-->
+    <!--<script src="/assets/RTCMultiConnection.js"></script>-->
+</head>
+<body>
+<div id="videos"></div>
+<a id="end-button" class="btn-floating btn-large waves-effect waves-light" onclick="closeConnection();">
+    <i id="end-button-icon" class="mdi-av-videocam-off"></i>
+</a>
+<script>
+    /**
+     * function search for 'variable' in URL query string and returns it's value.
+     * If it is missing than 'defaultValue is returned'.
+     */
+    function getQueryVariableOr(variable, defaultValue) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) {
+                return pair[1];
+            }
+        }
+        return (defaultValue);
+    }
+
+    /**
+     * Closing the connection channel. If Android interface is present than inform
+     * it to be able to close the streaming. Redirect to homepage otherwise.
+     */
+    function closeConnection() {
+        connection.close();
+        if (streamFromAndroid) {
+            Android.closeStreaming();
+        } else {
+            window.location.href = "/";
+        }
+    }
+
+    /**
+     * debug function wraps
+     */
+    function debug(msg) {
+        console.log(msg);
+    }
+
+    /**
+     * function to change Floating Action Button
+     */
+    function changeFAB(visibility, color, icon) {
+        document.getElementById("end-button").style['background-color'] = color;
+        document.getElementById("end-button").style.visibility = visibility;
+        document.getElementById("end-button-icon").class = icon;
+    }
+
+    /**
+     * function sends the start stream request to device using server API.
+     */
+    function sendGcmMessage(roomId) {
+        debug("### requesting stream with id: " + roomId);
+        $.get("/api/devices/" + roomId + "/start-stream", function (data) {
+            timeGcm = new Date().getTime();
+            console.log(data);
+        });
+    }
+
+
+    /**
+     * setting up media constraints from the url parameters
+     */
+    function setupMediaConstraints() {
+        var allowedResolution = ['1920:1080', '1280:720', '960:720', '640:480', '320:240', '320:180'];
+        var minHeight = getQueryVariableOr("minHeight", 360);
+        var maxHeight = getQueryVariableOr("maxHeight", 1080);
+        var minWidth = getQueryVariableOr("minWidth", 640);
+        var maxWidth = getQueryVariableOr("maxWidth", 1920);
+        var bandwidth = getQueryVariableOr("bandwidth", 2048);
+        var minFrameRate = getQueryVariableOr("minFrameRate", 30);
+        var maxFrameRate = getQueryVariableOr("maxFrameRate", 60);
+        var facingMode = getQueryVariableOr("facingMode", null);
+
+        if (allowedResolution.indexOf(minWidth + ":" + minHeight) == -1) {
+            debug("### wrong min resolution video constraints.");
+            minWidth = 640;
+            minHeight = 360;
+        }
+
+        if (allowedResolution.indexOf(minWidth + ":" + minHeight) == -1) {
+            debug("### wrong max resolution video constraints.");
+            maxWidth = 1920;
+            maxHeight = 1080;
+        }
+
+        if (minWidth > maxWidth) {
+            debug("### min resolution video constraints are higher than max.");
+            maxWidth = minWidth;
+            maxHeight = minHeight;
+        }
+
+        if (minFrameRate > maxFrameRate) {
+            maxFrameRate = minFrameRate;
+        }
+
+        var optionalConstraints = [];
+
+        if (facingMode) {
+            optionalConstraints = [
+                {facingMode: facingMode}
+            ];
+        }
+
+        connection.mediaConstraints.video = {
+            mandatory: {
+                minFrameRate: minFrameRate,
+                maxFrameRate: maxFrameRate
+            },
+            optional: optionalConstraints
+        };
+
+        connection.media.max(maxWidth, maxHeight);
+        connection.media.min(minWidth, minHeight);
+        connection.bandwidth.video = bandwidth;
+    }
+
+    /**
+     *
+     */
+    function restartPlayback() {
+        if (!videoId) return;
+
+        var vidElem = document.getElementById(videoId);
+        if (!vidElem) return;
+
+        vidElem.pause();
+        vidElem.play();
+    }
+
+
+    // get the roomId from parameter
+    var roomId = getQueryVariableOr("room", "unknown");
+    var streamer = getQueryVariableOr("stream", false) === "true";
+    var quitOnEmptyRoom = getQueryVariableOr("quitOnEmptyRoom", "true") === "true";
+
+    // initialize connection channel
+    var connection = new RTCMultiConnection("cz-janchvala-ipcam-" + roomId);
+
+    // get password from URL or from Android JavaScript callback
+    var streamFromAndroid = (typeof Android !== "undefined");
+    var password = getQueryVariableOr("password", streamer ? "password" : false);
+    if (streamFromAndroid) {
+        password = Android.getPassword();
+    }
+
+    // additional variables
+    var sessions = {};
+    var gcmMessageSent = false;
+    var connectionStartCount = 0;
+    var videoId = null;
+    var timeConnection, timeGcm, timeStream;
+
+    // setting connection only for video - one way for playback
+    connection.session = {
+        audio: false,
+        video: true,
+        oneway: true
+    };
+
+    if (streamer) {
+        setupMediaConstraints();
+    } else {
+        connection.extra.password = password;
+        //sendGcmMessage(roomId);
+    }
+
+
+    // onstream is called when getUserMedia returns local stream
+    // or session with stream has been connected
+    connection.onstream = function (e) {
+        if (streamer) {
+            //  remote streams for streamer are ignored
+            if (e.type !== 'local') {
+                restartPlayback();
+                return;
+            }
+            // streamer does not need controls
+            e.mediaElement.controls = false;
+        } else {
+            // button for ending the stream is set to visible
+            changeFAB("visible", "#F44336", "mdi-av-videocam-off");
+        }
+
+        // auto play both streamer and player
+        e.mediaElement.autoplay = true;
+
+        debug(e);
+
+        // we suppose that there is only one stream at the time.
+        if (e.mediaElement.id !== "undefined") {
+            var videos = $('#videos');
+            videos.empty();
+            videos.prepend(e.mediaElement);
+
+            timeStream = new Date().getTime();
+            videoId = e.mediaElement.id;
+        } else {
+            restartPlayback();
+            debug("### stream with undefined identifier found");
+        }
+    };
+
+    // onNewSession is called only for players, This is the place
+    // when player joins the session
+    connection.onNewSession = function (session) {
+        if (sessions[session.sessionid]) {
+            debug("### session already initialized");
+        } else {
+            sessions[session.sessionid] = session;
+
+            debug("### joining new session" + session.sessionid);
+
+            // playback needs to have password set up. at first this can be passed with URL
+            // but when rejected and connected next time we prompt user for password.
+            if (!streamer && (!password || connectionStartCount > 1)) {
+                connection.extra.password = prompt('Enter password to join this room.');
+            }
+
+            // join the new session and remember it's id in case the password does not match
+            connection.extra.joiningSession = session.sessionid;
+            connection.join(session.sessionid);
+        }
+    };
+
+    // when the stream end we remove the element from HTML DOM
+    connection.onstreamended = function (e) {
+        e.mediaElement.style.opacity = 0;
+        if (e.mediaElement.parentNode) {
+            e.mediaElement.parentNode.removeChild(e.mediaElement);
+        }
+    };
+
+    // onRequest is called only for streamer. This is the request to participate on
+    // the session. We allow it only when password equal.
+    connection.onRequest = function (e) {
+        if (e.extra.password !== password) {
+            debug("### passwords does not match");
+            connection.reject(e);
+        } else {
+            debug("### passwords are equal");
+            connection.accept(e);
+        }
+    };
+
+    // we have to hook up to onstatechange because of password check.
+    connection.onstatechange = function (state) {
+        debug("### onstatechange");
+        debug(state);
+        // we handle only "request-rejected" state changes
+        if (state.name == 'request-rejected') {
+            debug('### onstatechange: recreating session - session denied');
+            ++connectionStartCount;
+
+            // clear the joined session information
+            if (sessions[connection.extra.joiningSession]) {
+                sessions[connection.extra.joiningSession] = null;
+            }
+
+            //close current connection which triggers the reconnection
+            connection.close();
+        }
+
+        if (state.name == 'connected-with-initiator') {
+            var now = new Date().getTime();
+            debug("### TIME MEASURES: " + (timeStream - timeConnection) + "\t" + (now - timeStream) + "\t" + (now - timeGcm) + "\t" + (now - timeConnection));
+        }
+    };
+
+    // when somebody leaves check whether he was not last one on channel
+    connection.onleave = function (e) {
+        // the numberOfConnectedUsers represents the amount of users in this session
+        debug("### onleave: connected user count: " + connection.numberOfConnectedUsers);
+        if (quitOnEmptyRoom && connection.numberOfConnectedUsers < 2) {
+            // I am the only one in here. Leaving.
+            debug("### onleave: everybody has left - closing");
+            closeConnection();
+        }
+    };
+
+    // override default behavior of setting the muted poster
+    connection.onmute = function (e) {
+        if (e.isVideo && e.mediaElement) {
+            e.mediaElement.pause();
+        }
+        if (e.isAudio && e.mediaElement) {
+            e.mediaElement.muted = true;
+        }
+    };
+
+
+    // setup signaling  channel to search existing sessions
+    connection.connect();
+    timeConnection = new Date().getTime();
+
+
+    // only streamer peer the room connection should be opened by him
+    if (streamer) {
+        connection.open(roomId);
+    } else {
+        setTimeout(function () {
+            // if there is no session created send GCM message to start the stream
+            var sessionMissing = $.isEmptyObject(connection.sessionDescriptions);
+            debug("### should send GCM message: " + sessionMissing);
+            if (sessionMissing) {
+                sendGcmMessage(roomId);
+            }
+        }, 3000);
+    }
+</script>
+</body>
+</html>
