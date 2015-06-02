@@ -1,0 +1,6 @@
+<div ng-repeat="item in getBreadCrumbs()"  layout="row" ng-controller="JchBreadCrumbsCtrl">
+    <a style="margin: auto" ng-if="item.name" ui-sref="{{ item.name }}"><span>{{ item.pageTitle }}</span></a>
+    <span ng-if="!item.name" style="margin: auto">{{ item.pageTitle }}</span>
+
+    <ng-md-icon ng-if="!$last" class="breadCrumbDivider" icon="chevron_right" size="32"></ng-md-icon>
+</div>

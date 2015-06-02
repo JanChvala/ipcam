@@ -1,0 +1,11 @@
+.idea
+**/__pycache__/
+app/app.db
+
+.sass-cache
+.tmp
+dist
+bower_components
+
+/server/apps/*/public
+

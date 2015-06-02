@@ -1,0 +1,8 @@
+<md-toolbar layout="row" ng-controller="JchBrandNavbarCtrl">
+
+    <h1 class="md-toolbar-tools">
+        <ng-md-icon class="project-icon" icon="{{ projectInfo.icon }}" size="32" hide-lg hide-md hide-sm></ng-md-icon>
+        <ng-md-icon class="project-icon" style="cursor: pointer;" icon="arrow_back" size="32" hide-gt-lg ng-click="toggleSideNav('left')"></ng-md-icon>
+        {{ projectInfo.name }}
+    </h1>
+</md-toolbar>

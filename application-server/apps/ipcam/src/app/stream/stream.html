@@ -1,0 +1,14 @@
+<div id="videos" class="full-screen" layout="column" layout-align="center center" style="background-color: black">
+  <!--<video ng-src="{{ videoSrc | trusted}}" width="100%" height="auto" muted="true" controls autoplay></video>-->
+</div>
+
+<div class="full-screen" layout="column" layout-align="center center" style="background-color: {{ videoAvailable ? 'transparent' : 'rgb(0,188,212)' }}">
+  <md-card ng-if="false && !videoAvailable" style="background-color: white">
+    <md-card-content>
+      <h2>Failed to access local media</h2>
+      <p>Make sure to click allow when asked for local media permission.</p>
+      <md-button class="md-raised md-primary" ng-click="reconnect()" style="float: right">Retry</md-button>
+    </md-card-content>
+  </md-card>
+</div>
+

@@ -1,0 +1,14 @@
+<div ng-hide="appLoaded" class="appLoadingContainer" ng-controller="JchAppLoaderCtrl" >
+    <div class="appLoadingSpinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+</div>
+<div ng-cloak ng-show="appLoaded && $root.maintenanceMode" ng-controller="JchAppLoaderCtrl" style="height: 100%">
+ <md-toolbar style="height: 100%" layout-align="center center">
+      <h2 style="margin-bottom: 0">THIS PAGE IS BEING MAINTAINED</h2>
+      <h6 style="margin-top: 0px">sorry for the inconvenience</h6>
+    </md-toolbar>
+</div>
+<div ng-cloak ng-show="appLoaded && !$root.maintenanceMode" layout="row" style="min-height: 100%" ng-transclude ng-controller="JchAppLoaderCtrl" >
+</div>

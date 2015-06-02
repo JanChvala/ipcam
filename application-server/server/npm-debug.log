@@ -1,0 +1,131 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose readDependencies using package.json deps
+6 verbose install where, deps [ 'D:\\projects\\portfolio\\server',
+6 verbose install   [ 'bcrypt-nodejs',
+6 verbose install     'body-parser',
+6 verbose install     'compression',
+6 verbose install     'cookie-parser',
+6 verbose install     'debug',
+6 verbose install     'express',
+6 verbose install     'express-session',
+6 verbose install     'jade',
+6 verbose install     'mongoose',
+6 verbose install     'morgan',
+6 verbose install     'node-gcm',
+6 verbose install     'oauth2orize',
+6 verbose install     'passport',
+6 verbose install     'passport-http',
+6 verbose install     'passport-http-bearer',
+6 verbose install     'serve-favicon',
+6 verbose install     'subdomain',
+6 verbose install     'socket-io' ] ]
+7 info preinstall jch-node-server@0.0.1
+8 verbose readDependencies using package.json deps
+9 verbose already installed skipping bcrypt-nodejs@0.0.3 D:\projects\portfolio\server
+10 verbose already installed skipping body-parser@~1.12.2 D:\projects\portfolio\server
+11 verbose already installed skipping compression@^1.4.3 D:\projects\portfolio\server
+12 verbose already installed skipping cookie-parser@~1.3.4 D:\projects\portfolio\server
+13 verbose already installed skipping debug@~2.1.1 D:\projects\portfolio\server
+14 verbose already installed skipping express@~4.12.3 D:\projects\portfolio\server
+15 verbose already installed skipping express-session@^1.11.1 D:\projects\portfolio\server
+16 verbose already installed skipping jade@~1.9.2 D:\projects\portfolio\server
+17 verbose already installed skipping mongoose@^4.0.1 D:\projects\portfolio\server
+18 verbose already installed skipping morgan@~1.5.1 D:\projects\portfolio\server
+19 verbose already installed skipping node-gcm@^0.9.15 D:\projects\portfolio\server
+20 verbose already installed skipping oauth2orize@^1.0.1 D:\projects\portfolio\server
+21 verbose already installed skipping passport@^0.2.1 D:\projects\portfolio\server
+22 verbose already installed skipping passport-http@^0.2.2 D:\projects\portfolio\server
+23 verbose already installed skipping passport-http-bearer@^1.0.1 D:\projects\portfolio\server
+24 verbose already installed skipping serve-favicon@~2.2.0 D:\projects\portfolio\server
+25 verbose already installed skipping subdomain@^1.2.0 D:\projects\portfolio\server
+26 verbose cache add [ 'socket-io@0.9.17', null ]
+27 verbose cache add name=undefined spec="socket-io@0.9.17" args=["socket-io@0.9.17",null]
+28 verbose parsed url { protocol: null,
+28 verbose parsed url   slashes: null,
+28 verbose parsed url   auth: null,
+28 verbose parsed url   host: null,
+28 verbose parsed url   port: null,
+28 verbose parsed url   hostname: null,
+28 verbose parsed url   hash: null,
+28 verbose parsed url   search: null,
+28 verbose parsed url   query: null,
+28 verbose parsed url   pathname: 'socket-io@0.9.17',
+28 verbose parsed url   path: 'socket-io@0.9.17',
+28 verbose parsed url   href: 'socket-io@0.9.17' }
+29 verbose cache add name="socket-io" spec="0.9.17" args=["socket-io","0.9.17"]
+30 verbose parsed url { protocol: null,
+30 verbose parsed url   slashes: null,
+30 verbose parsed url   auth: null,
+30 verbose parsed url   host: null,
+30 verbose parsed url   port: null,
+30 verbose parsed url   hostname: null,
+30 verbose parsed url   hash: null,
+30 verbose parsed url   search: null,
+30 verbose parsed url   query: null,
+30 verbose parsed url   pathname: '0.9.17',
+30 verbose parsed url   path: '0.9.17',
+30 verbose parsed url   href: '0.9.17' }
+31 verbose addNamed [ 'socket-io', '0.9.17' ]
+32 verbose addNamed [ '0.9.17', '0.9.17' ]
+33 silly lockFile 8b84212a-socket-io-0-9-17 socket-io@0.9.17
+34 verbose lock socket-io@0.9.17 C:\Users\jan\AppData\Roaming\npm-cache\8b84212a-socket-io-0-9-17.lock
+35 verbose request where is /socket-io
+36 verbose request registry https://registry.npmjs.org/
+37 verbose request id bf57bb09253cd74e
+38 verbose url raw /socket-io
+39 verbose url resolving [ 'https://registry.npmjs.org/', './socket-io' ]
+40 verbose url resolved https://registry.npmjs.org/socket-io
+41 verbose request where is https://registry.npmjs.org/socket-io
+42 info trying registry request attempt 1 at 17:20:51
+43 http GET https://registry.npmjs.org/socket-io
+44 http 404 https://registry.npmjs.org/socket-io
+45 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+45 verbose headers   'content-type': 'application/json',
+45 verbose headers   'cache-control': 'max-age=0',
+45 verbose headers   'content-length': '51',
+45 verbose headers   'accept-ranges': 'bytes',
+45 verbose headers   date: 'Mon, 18 May 2015 15:20:47 GMT',
+45 verbose headers   via: '1.1 varnish',
+45 verbose headers   age: '0',
+45 verbose headers   connection: 'keep-alive',
+45 verbose headers   'x-served-by': 'cache-fra1235-FRA',
+45 verbose headers   'x-cache': 'MISS',
+45 verbose headers   'x-cache-hits': '0',
+45 verbose headers   'x-timer': 'S1431962447.315120,VS0,VE177' }
+46 silly registry.get cb [ 404,
+46 silly registry.get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+46 silly registry.get     'content-type': 'application/json',
+46 silly registry.get     'cache-control': 'max-age=0',
+46 silly registry.get     'content-length': '51',
+46 silly registry.get     'accept-ranges': 'bytes',
+46 silly registry.get     date: 'Mon, 18 May 2015 15:20:47 GMT',
+46 silly registry.get     via: '1.1 varnish',
+46 silly registry.get     age: '0',
+46 silly registry.get     connection: 'keep-alive',
+46 silly registry.get     'x-served-by': 'cache-fra1235-FRA',
+46 silly registry.get     'x-cache': 'MISS',
+46 silly registry.get     'x-cache-hits': '0',
+46 silly registry.get     'x-timer': 'S1431962447.315120,VS0,VE177' } ]
+47 silly lockFile 8b84212a-socket-io-0-9-17 socket-io@0.9.17
+48 silly lockFile 8b84212a-socket-io-0-9-17 socket-io@0.9.17
+49 error 404 404 Not Found: socket-io
+49 error 404
+49 error 404 'socket-io' is not in the npm registry.
+49 error 404 You should bug the author to publish it
+49 error 404 It was specified as a dependency of 'jch-node-server'
+49 error 404
+49 error 404 Note that you can also install from a
+49 error 404 tarball, folder, or http url, or git url.
+50 error System Windows_NT 6.2.9200
+51 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+52 error cwd D:\projects\portfolio\server
+53 error node -v v0.10.33
+54 error npm -v 1.4.28
+55 error code E404
+56 verbose exit [ 1, true ]

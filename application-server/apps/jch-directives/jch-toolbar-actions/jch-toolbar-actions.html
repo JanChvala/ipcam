@@ -1,0 +1,11 @@
+<div class="md-toolbar-tools" style="position: absolute; top: 0; right: 0; width: auto;" layout="row" ng-controller="JchToolbarActionsCtrl">
+    <div ng-repeat="item in getActions()">
+        <md-button ng-click="actionItemClick(item)">
+            <div layout="row">
+                <ng-md-icon class="breadCrumbDivider" icon="{{ item.icon }}" size="32"></ng-md-icon>
+                <span hide-sm hide-md style="margin: auto 15px auto auto;">{{ item.name }}</span>
+            </div>
+            <md-tooltip hide-gt-md>{{ item.name }}</md-tooltip>
+        </md-button>
+    </div>
+</div>
