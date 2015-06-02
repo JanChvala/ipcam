@@ -42,6 +42,11 @@
     <!--<script src="/assets/RTCMultiConnection.js"></script>-->
 </head>
 <body>
+<div id="progress-message" style="max-width: 600px; margin: 64px auto;">
+  <div class="card-panel">
+    <h5 id="progress-message-value"></h5>
+  </div>
+</div>
 <div id="videos"></div>
 <a id="end-button" class="btn-floating btn-large waves-effect waves-light" onclick="closeConnection();">
     <i id="end-button-icon" class="mdi-av-videocam-off"></i>
@@ -97,12 +102,23 @@
      */
     function sendGcmMessage(roomId) {
         debug("### requesting stream with id: " + roomId);
-        $.get("/api/devices/" + roomId + "/start-stream", function (data) {
-            timeGcm = new Date().getTime();
-            console.log(data);
+        $.get("/api/devices/" + roomId + "/start-stream").done(function(data) {
+          timeGcm = new Date().getTime();
+          console.log(data);
+        }).fail(function() {
+            setProgressMessage(true, "Error sending GCM message.");
         });
     }
 
+    function setProgressMessage(show, message) {
+      var msgContainer = $('#progress-message');
+      if (show) {
+        msgContainer.show();
+        $('#progress-message-value').text(message);
+      } else {
+        msgContainer.hide();
+      }
+    }
 
     /**
      * setting up media constraints from the url parameters
@@ -174,6 +190,7 @@
         vidElem.play();
     }
 
+    setProgressMessage(true, "Initializing...");
 
     // get the roomId from parameter
     var roomId = getQueryVariableOr("room", "unknown");
@@ -232,6 +249,7 @@
         e.mediaElement.autoplay = true;
 
         debug(e);
+        setProgressMessage(false, "");
 
         // we suppose that there is only one stream at the time.
         if (e.mediaElement.id !== "undefined") {
@@ -256,6 +274,7 @@
             sessions[session.sessionid] = session;
 
             debug("### joining new session" + session.sessionid);
+            setProgressMessage(true, "Checking the password...");
 
             // playback needs to have password set up. at first this can be passed with URL
             // but when rejected and connected next time we prompt user for password.
@@ -334,11 +353,11 @@
         }
     };
 
-
     // setup signaling  channel to search existing sessions
     connection.connect();
     timeConnection = new Date().getTime();
 
+    setProgressMessage(true, "Connecting to the room '" + roomId + "'...");
 
     // only streamer peer the room connection should be opened by him
     if (streamer) {
@@ -346,11 +365,18 @@
     } else {
         setTimeout(function () {
             // if there is no session created send GCM message to start the stream
+            setProgressMessage(true, "Starting device with GCM message...");
             var sessionMissing = $.isEmptyObject(connection.sessionDescriptions);
             debug("### should send GCM message: " + sessionMissing);
             if (sessionMissing) {
                 sendGcmMessage(roomId);
             }
+
+            setTimeout(function () {
+              if ($.isEmptyObject(sessions)) {
+                setProgressMessage(true, "The device did not connect to the channel...");
+              }
+            }, 30000);
         }, 3000);
     }
 </script>
