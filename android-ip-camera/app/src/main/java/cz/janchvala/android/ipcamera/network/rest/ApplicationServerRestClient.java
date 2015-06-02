@@ -67,8 +67,6 @@ public class ApplicationServerRestClient {
         OkHttpClient client = new OkHttpClient();
         client.networkInterceptors().add(new StethoInterceptor());
 
-        final String credentials = "jan:jan";
-
         // Create a very simple REST adapter which points the GitHub API endpoint.
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(ipCamPreferences.serverUrl().get())
@@ -79,17 +77,7 @@ public class ApplicationServerRestClient {
                         Log.i("HTTP", message);
                     }
                 })
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestFacade request) {
-
-                        // create Base64 encoded string
-                        String string = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                        request.addHeader("Authorization", string);
-                    }
-                })
-                .build();
+                .setLogLevel(RestAdapter.LogLevel.FULL).build();
 
         // Create an instance of our GitHub API interface.
         return restAdapter.create(apiClazz);

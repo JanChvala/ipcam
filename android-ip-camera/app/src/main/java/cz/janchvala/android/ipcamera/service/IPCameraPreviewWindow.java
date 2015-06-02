@@ -262,7 +262,7 @@ public class IPCameraPreviewWindow extends StandOutWindow {
                 }
             });
         }
-        return true;
+        return false;
     }
 
 
