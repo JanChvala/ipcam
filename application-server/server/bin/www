@@ -7,7 +7,6 @@
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
-var https = require('https');
 
 // common file which exposes configuration
 var common = require('./../common');
@@ -24,29 +23,12 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
-
-var server;
-
-if (false) {
-    var options = {
-        key: fs.readFileSync(__dirname + '/../fake-keys/privatekey.pem'),
-        cert: fs.readFileSync(__dirname + '/../fake-keys/certificate.pem')
-    };
-    server = https.createServer(options, app);
-} else {
-    server = http.createServer(app);
-}
-
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 var listeningServer = server.listen(port);
-
-/**
- * socket io server
- */
-require('./socket-io-server').configureSocketIOServer(listeningServer);
 
 server.on('error', onError);
 server.on('listening', onListening);

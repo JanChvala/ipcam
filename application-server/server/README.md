@@ -1,14 +1,12 @@
-## IPcam front-end module
+## IPcam back-end module
 
 ### Prerequisites
 These tools have to be available on classpath:
-* bower
 * npm
 
 ### How to install this module
 Open directory containing this file in command line and type:
-1. bower install
-2. npm update
+1. npm update
 
 ### Running only ipcam module
 Open directory containing this file in command line and type:

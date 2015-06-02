@@ -32,7 +32,7 @@ class MainPageCtrl {
           console.log($scope);
           var callerID = $rootScope.callerID;
           $rootScope.callerID = '';
-          $window.location.href = "/assets/ipcamera.html?room=" + callerID;
+          $window.location.href = "assets/ipcamera.html?room=" + callerID;
         }, function () {});
     };
   }

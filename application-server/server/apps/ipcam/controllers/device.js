@@ -5,17 +5,6 @@ var common = require(__dirname + '/../common');
 // GoogleCloudMessaging
 var gcm = require('node-gcm');
 
-// GET /api/devices
-exports.getDevices = function (req, res) {
-    // Use the Beer model to find all beer
-    Device.find({userId: req.user._id}, function (err, devices) {
-        if (err)
-            res.send(err);
-
-        res.json(devices);
-    });
-};
-
 // POST /api/devices
 exports.postDevices = function (req, res) {
     // Create a new instance of the Device model
@@ -25,7 +14,6 @@ exports.postDevices = function (req, res) {
     device.name = req.body.name;
     device.gcmRegistrationId = req.body.gcmRegistrationId;
 
-    device.userId = req.user._id;
     device.code = common.generateUID(8);
     device.lastUpdate = new Date();
 
@@ -77,38 +65,5 @@ exports.startDeviceStreaming = function (req, res) {
                 res.json({result: "success", message: "Sending GCM message successful."});
             }
         });
-    });
-};
-
-// GET /api/devices/:device_id
-exports.getDevice = function (req, res) {
-    // Use the Device model to find a specific beer
-    Device.find({userId: req.user._id, _id: req.params.device_id}, function (err, device) {
-        if (err)
-            res.send(err);
-
-        res.json(device);
-    });
-};
-
-// PUT /api/devices/:device_id
-exports.putDevice = function (req, res) {
-    // Use the Beer model to find a specific beer
-    Device.update({userId: req.user._id, _id: req.params.device_id}, {lastUpdate: new Date()}, function (err, num, raw) {
-        if (err)
-            res.send(err);
-
-        res.json({message: num + ' updated'});
-    });
-};
-
-// DELETE /api/devices/:device_id
-exports.deleteDevice = function (req, res) {
-    // Use the Beer model to find a specific device and remove it
-    Device.remove({userId: req.user._id, _id: req.params.device_id}, function (err) {
-        if (err)
-            res.send(err);
-
-        res.json({message: 'Device removed from the app!'});
     });
 };
