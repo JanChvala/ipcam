@@ -82,13 +82,6 @@
     }
 
     /**
-     * debug function wraps
-     */
-    function debug(msg) {
-        console.log(msg);
-    }
-
-    /**
      * function to change Floating Action Button
      */
     function changeFAB(visibility, color, icon) {
@@ -101,7 +94,7 @@
      * function sends the start stream request to device using server API.
      */
     function sendGcmMessage(roomId) {
-        debug("### requesting stream with id: " + roomId);
+        console.log("### requesting stream with id: " + roomId);
         $.get("/api/devices/" + roomId + "/start-stream").done(function(data) {
           timeGcm = new Date().getTime();
           console.log(data);
@@ -135,19 +128,19 @@
         var facingMode = getQueryVariableOr("facingMode", null);
 
         if (allowedResolution.indexOf(minWidth + ":" + minHeight) == -1) {
-            debug("### wrong min resolution video constraints.");
+            console.log("### wrong min resolution video constraints.");
             minWidth = 640;
             minHeight = 360;
         }
 
         if (allowedResolution.indexOf(minWidth + ":" + minHeight) == -1) {
-            debug("### wrong max resolution video constraints.");
+            console.log("### wrong max resolution video constraints.");
             maxWidth = 1920;
             maxHeight = 1080;
         }
 
         if (minWidth > maxWidth) {
-            debug("### min resolution video constraints are higher than max.");
+            console.log("### min resolution video constraints are higher than max.");
             maxWidth = minWidth;
             maxHeight = minHeight;
         }
@@ -178,7 +171,7 @@
     }
 
     /**
-     *
+     * this method restarts the playback (pause and play)
      */
     function restartPlayback() {
         if (!videoId) return;
@@ -248,7 +241,7 @@
         // auto play both streamer and player
         e.mediaElement.autoplay = true;
 
-        debug(e);
+        console.log(e);
         setProgressMessage(false, "");
 
         // we suppose that there is only one stream at the time.
@@ -261,7 +254,7 @@
             videoId = e.mediaElement.id;
         } else {
             restartPlayback();
-            debug("### stream with undefined identifier found");
+            console.log("### stream with undefined identifier found");
         }
     };
 
@@ -269,11 +262,11 @@
     // when player joins the session
     connection.onNewSession = function (session) {
         if (sessions[session.sessionid]) {
-            debug("### session already initialized");
+            console.log("### session already initialized");
         } else {
             sessions[session.sessionid] = session;
 
-            debug("### joining new session" + session.sessionid);
+            console.log("### joining new session" + session.sessionid);
             setProgressMessage(true, "Checking the password...");
 
             // playback needs to have password set up. at first this can be passed with URL
@@ -300,21 +293,21 @@
     // the session. We allow it only when password equal.
     connection.onRequest = function (e) {
         if (e.extra.password !== password) {
-            debug("### passwords does not match");
+            console.log("### passwords does not match");
             connection.reject(e);
         } else {
-            debug("### passwords are equal");
+            console.log("### passwords are equal");
             connection.accept(e);
         }
     };
 
     // we have to hook up to onstatechange because of password check.
     connection.onstatechange = function (state) {
-        debug("### onstatechange");
-        debug(state);
+        console.log("### onstatechange");
+        console.log(state);
         // we handle only "request-rejected" state changes
         if (state.name == 'request-rejected') {
-            debug('### onstatechange: recreating session - session denied');
+            console.log('### onstatechange: recreating session - session denied');
             ++connectionStartCount;
 
             // clear the joined session information
@@ -328,17 +321,17 @@
 
         if (state.name == 'connected-with-initiator') {
             var now = new Date().getTime();
-            debug("### TIME MEASURES: " + (timeStream - timeConnection) + "\t" + (now - timeStream) + "\t" + (now - timeGcm) + "\t" + (now - timeConnection));
+            console.log("### TIME MEASURES: " + (timeStream - timeConnection) + "\t" + (now - timeStream) + "\t" + (now - timeGcm) + "\t" + (now - timeConnection));
         }
     };
 
     // when somebody leaves check whether he was not last one on channel
     connection.onleave = function (e) {
         // the numberOfConnectedUsers represents the amount of users in this session
-        debug("### onleave: connected user count: " + connection.numberOfConnectedUsers);
+        console.log("### onleave: connected user count: " + connection.numberOfConnectedUsers);
         if (quitOnEmptyRoom && connection.numberOfConnectedUsers < 2) {
             // I am the only one in here. Leaving.
-            debug("### onleave: everybody has left - closing");
+            console.log("### onleave: everybody has left - closing");
             closeConnection();
         }
     };
@@ -367,7 +360,7 @@
             // if there is no session created send GCM message to start the stream
             setProgressMessage(true, "Starting device with GCM message...");
             var sessionMissing = $.isEmptyObject(connection.sessionDescriptions);
-            debug("### should send GCM message: " + sessionMissing);
+            console.log("### should send GCM message: " + sessionMissing);
             if (sessionMissing) {
                 sendGcmMessage(roomId);
             }

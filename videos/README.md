@@ -1,2 +1,2 @@
-# YouTube links
+This folder contains video with application demonstration.
 
